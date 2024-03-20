@@ -1,12 +1,12 @@
 # Connect to SharePoint Online
-Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/SharepointTestJembson" -Interactive
+Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/SharePointTesting" -Interactive
 
 # Specify the document library name
-$LibraryName = "Test"
+$LibraryName = "DocLibrary1"
 
 # Set batch size (adjust as needed)
 $BatchSize = 5000
-
+$counter = 0
 Try {
     # Get all files from the document library
     $Files = Get-PnPListItem -List $LibraryName -PageSize $BatchSize | Sort-Object ID -Descending
@@ -15,12 +15,15 @@ Try {
     ForEach ($File in $Files) {
         if ($File.FieldValues.FileLeafRef.StartsWith("~$")) {
             Remove-PnPListItem -List $LibraryName -Identity $File.Id -Recycle -Force
-            Write-Host "Removed Temp File: $($File.FieldValues.FileRef)"
-        }
+            $counter = $counter + 1
+            
+        }       
     }
 } Catch {
     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
 }
+
+Write-Host "$counter files Removed from document library."
 
 
 
