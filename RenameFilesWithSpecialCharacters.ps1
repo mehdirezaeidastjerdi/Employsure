@@ -32,14 +32,13 @@ foreach ($item in $items) {
         # Check if the item is a file or folder
         if ($itemType -eq 0) {
             # It's a file, rename it
-            Rename-PnPFile -ServerRelativeUrl /sites/$siteName/Test/$originalName -TargetFileName test.docx 
-
-
+            Rename-PnPFile -ServerRelativeUrl /sites/$siteName/$libraryName/$originalName -TargetFileName $newName -Force 
             Write-Host "Renamed file '$originalName' to '$newName'"
         }
         else {
             # It's a folder, handle it accordingly (e.g., log or skip)
-            Write-Host "Skipping folder '$originalName'"
+            Rename-PnPFolder -Folder $libraryName/$originalName -TargetFolderName $newName
+            Write-Host "Renamed folder '$originalName' to '$newName'"
         }
     }
 }
