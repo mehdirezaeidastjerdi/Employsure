@@ -5,14 +5,17 @@ $AllFiles = @()
 
 
 # Specify the name of your document library
+$SourceURL = "Shared Documents"
+$TargetURL = "Archive"
 $DocumentLibrary = "Shared Documents"
 
 Write-Host "Retrieve all files from the document library"
 $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize 2000 | Where-Object { $_["FileDirRef"] -eq "/sites/SharePointTesting/$DocumentLibrary" } 
 Write-Host "Batch selected..."
 # Enumerate all list items to get file details
+
 foreach ($Item in $ListItems) {
-    $AllFiles += New-Object PSObject -Property @{
+        $AllFiles += New-Object PSObject -Property @{
         FileName = $Item.FieldValues["FileLeafRef"]
         FileID = $Item.FieldValues["UniqueId"]
         FileType = $Item.FieldValues["File_x0020_Type"]
@@ -24,6 +27,13 @@ foreach ($Item in $ListItems) {
         ModifiedByEmail = $Item.FieldValues["Editor"].Email
         FileSize_KB = [Math]::Round(($Item.FieldValues["File_x0020_Size"] / 1024), 2)
     }
+}
+
+foreach ($File in $ListItems) {
+    $fileLeafRef = $File.FieldValues.FileLeafRef
+      Write-Host "'$fileLeafRef'"
+      Copy-PnPFile -SourceUrl $SourceURL/$fileLeafRef -TargetUrl $TargetURL/$fileLeafRef -Force
+    # }
 }
 
 # Export the file details to a CSV file
