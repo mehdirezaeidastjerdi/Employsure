@@ -1,14 +1,13 @@
-
 # Update-Module -Name "SharePointPnPPowerShellOnline" 
 Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/SharePointTesting" -UseWebLogin
 
 # Specify the name of your document library
 $SiteName = "SharePointTesting"
-$SourceURL = "Shared Documents"
+$SourceURL = "DocLibrary1"
 $TargetURL = "Archive"
 $DocumentLibrary = $SourceURL
 $BatchSize = 2000
-$SpecificDate = "2024-03-22"
+$SpecificDate = "2017-03-22"
 
 try {
     Write-Host "Retrieve all files from the document library"
