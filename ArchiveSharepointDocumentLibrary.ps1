@@ -13,6 +13,7 @@ try {
     Write-Host "Retrieve all files from the document library"
     $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary"  -and $_["Modified"] -lt $SpecificDate  } 
     Write-Host "Batch selected..."
+    $AllFiles = @()
     # Enumerate all list items to get file details
     foreach ($Item in $ListItems) {
         $AllFiles += New-Object PSObject -Property @{
