@@ -2,13 +2,12 @@
 Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/SharePointTesting" -UseWebLogin
 # Specify the name of your document library
 $SiteName = "SharePointTesting"
-$SourceURL = "Shared Documents"
+$SourceURL = "DocLibrary1"
 $TargetURL = "Archive"
 $DocumentLibrary = $SourceURL
 $BatchSize = 2000
 
 $CsvAllClientsPath = "C:\temp\All clients_old.csv"
-$CsvSourceDLPath = "C:\temp\SharePointTesting_old.csv"
 $OutputCsvPath = "C:\temp\OutputResult.csv"
 
 try {
@@ -25,11 +24,8 @@ try {
         }
     }
     
-    $AllFiles | Export-Csv -Path "C:\temp\AllFiles.csv" -NoTypeInformation
-    $CsvSourceDLPath = "C:\temp\AllFiles.csv"
-
     $CsvData1 = Import-Csv -Path $CsvAllClientsPath
-    $CsvData2 = Import-Csv -Path $CsvSourceDLPath
+    # $CsvData2 = Import-Csv -Path $CsvSourceDLPath
 
     # Initialize an array to store matching items
     $MatchingItems = @()
@@ -37,7 +33,7 @@ try {
     # Loop through each item in the first CSV file
     foreach ($item in $CsvData1[0..99]) {
         # Check if the item exists in the second CSV file
-        $matchingItem = $CsvData2.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c}
+        $matchingItem = $AllFiles.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c}
         if ($matchingItem) {
             # Add the matching item to the array
             $MatchingItems += New-Object PSObject -Property @{
