@@ -1,5 +1,6 @@
-# Update-Module -Name "SharePointPnPPowerShellOnline" 
+# Update-Module -Name "SharePointPnPPowerShellOnline"
 Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/SharePointTesting" -UseWebLogin
+
 # Specify the name of your document library
 $SiteName = "SharePointTesting"
 $SourceURL = "Shared Documents"
@@ -11,59 +12,51 @@ $CsvAllClientsPath = "C:\temp\All clients_old.csv"
 $OutputCsvPath = "C:\temp\OutputResult.csv"
 
 try {
-    
     Write-Host "Retrieve all files from the document library"
-    
-    $timer = Measure-Command{
+    $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary" }
+    Write-Host "Batch selected..."
 
-        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary" } 
-        Write-Host "Batch selected..."
-    
-        $AllFiles = @()
-        
-        # Enumerate all list items to get file details
-        foreach ($Item in $ListItems) {
-            $AllFiles += New-Object PSObject -Property @{
-                ClientTradingName = $Item.FieldValues["FileLeafRef"]   
-            }
+    $AllFiles = @()
+
+    # Enumerate all list items to get file details
+    foreach ($Item in $ListItems) {
+        $AllFiles += New-Object PSObject -Property @{
+            ClientTradingName = $Item.FieldValues["FileLeafRef"]
         }
-
-        $AllFiles | Export-Csv -Path "C:\temp\AllFiles.csv"
-
     }
 
-    Write-host "Elaped time to get ListItems : $($timer.TotalSeconds) seconds"
-    
-    
-    # get list of all active clients from csv file
     $CsvData1 = Import-Csv -Path $CsvAllClientsPath
-    
 
-    # Initialize an array to store matching items
+    # Initialize arrays to store matching and unmatched items
     $MatchingItems = @()
+    $UnmatchedItems = @()
 
-    Write-Host "Comparing Items with all active clients..."
-
-    $timer = Measure-Command{
-        # Loop through each item in the first CSV file
-        foreach ($item in $CsvData1[0..1000]) {
-            # Check if the item exists in the second CSV file
-            $matchingItem = $AllFiles.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c}
-            if ($matchingItem) {
-                # Add the matching item to the array
-                $MatchingItems += New-Object PSObject -Property @{
-                    ClientTradingName = $matchingItem
-                }
+    # Loop through each item in the first CSV file
+    foreach ($item in $CsvData1[0..99]) {
+        # Check if the item exists in the second CSV file
+        $matchingItem = $AllFiles.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c }
+        if ($matchingItem) {
+            # Add the matching item to the array
+            $MatchingItems += New-Object PSObject -Property @{
+                ClientTradingName = $matchingItem
+            }
+        } else {
+            # Add the unmatched item to the array
+            $UnmatchedItems += New-Object PSObject -Property @{
+                ClientTradingName = $item.Trading_Name__c
             }
         }
-        Write-Host "Matching items:" -ForegroundColor Green
-        # Export the matching items to another CSV file
-        $MatchingItems | Format-Table
-        $MatchingItems | Export-Csv -Path $OutputCsvPath -NoTypeInformation
-        
     }
-    Write-host "Elaped time to compare 1000 items : $($timer.TotalSeconds) seconds"
 
+    Write-Host "Matching items:" -ForegroundColor Green
+    $MatchingItems | Format-Table
+
+    Write-Host "Unmatched items:" -ForegroundColor Yellow
+    $UnmatchedItems | Format-Table
+
+    # Export the matching and unmatched items to separate CSV files
+    $MatchingItems | Export-Csv -Path $OutputCsvPath -NoTypeInformation
+    $UnmatchedItems | Export-Csv -Path "C:\temp\UnmatchedResult.csv" -NoTypeInformation
 }
 catch {
     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
