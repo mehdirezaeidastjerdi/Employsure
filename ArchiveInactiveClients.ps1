@@ -1,12 +1,15 @@
 # Update-Module -Name "SharePointPnPPowerShellOnline" 
 Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/SharePointTesting" -UseWebLogin
-
 # Specify the name of your document library
 $SiteName = "SharePointTesting"
 $SourceURL = "Shared Documents"
 $TargetURL = "Archive"
 $DocumentLibrary = $SourceURL
 $BatchSize = 2000
+
+$CsvAllClientsPath = "C:\temp\All clients_old.csv"
+$CsvSourceDLPath = "C:\temp\SharePointTesting_old.csv"
+$OutputCsvPath = "C:\temp\OutputResult.csv"
 
 try {
     Write-Host "Retrieve all files from the document library"
@@ -21,51 +24,35 @@ try {
             ClientTradingName = $Item.FieldValues["FileLeafRef"]   
         }
     }
-    $AllFiles
-    $MatchingFields = @()
+    
+    $AllFiles | Export-Csv -Path "C:\temp\AllFiles.csv" -NoTypeInformation
+    $CsvSourceDLPath = "C:\temp\AllFiles.csv"
 
-    # Loop through each file in the $AllFiles array
-    foreach($file in $AllFiles){
-        $termFound = Search-CsvForTerm -SearchTerm $file.ClientTradingName
-        if($termFound){
-            $MatchingFields += $file
+    $CsvData1 = Import-Csv -Path $CsvAllClientsPath
+    $CsvData2 = Import-Csv -Path $CsvSourceDLPath
+
+    # Initialize an array to store matching items
+    $MatchingItems = @()
+
+    # Loop through each item in the first CSV file
+    foreach ($item in $CsvData1[0..99]) {
+        # Check if the item exists in the second CSV file
+        $matchingItem = $CsvData2.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c}
+        if ($matchingItem) {
+            # Add the matching item to the array
+            $MatchingItems += New-Object PSObject -Property @{
+                ClientTradingName = $matchingItem
+            }
         }
     }
+    Write-Host "Matching items:" -ForegroundColor Green
+    # Export the matching items to another CSV file
+    $MatchingItems | Format-Table
+    $MatchingItems | Export-Csv -Path $OutputCsvPath -NoTypeInformation
 
-
-
-    # Export the file details to a CSV file
-    $MatchingFields | Export-Csv -Path "C:\temp\MatchingFields.csv" -NoTypeInformation -Encoding UTF8
-
-    Write-Host "MatchingFields exported successfully" -ForegroundColor Green
 }
 catch {
     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 Disconnect-PnPOnline
-# ******************************************************************************
-# ******************************************************************************
-function Search-CsvForTerm {
-    param (
-        [string]$SearchTerm
-    )
-
-    # Hardcoded path to your CSV file
-    $CsvFilePath = "C:\temp\All clients_old.csv"
-
-    # Import the CSV file
-    $CsvData = Import-Csv -Path $CsvFilePath
-
-    # Check if the search term exists in any column
-    foreach ($row in $CsvData) {
-        if ($row.Client_Number__c | ForEach-Object { $_ -match $SearchTerm }) {
-            return $true
-        }
-    }
-
-    # If no match is found, return false
-    return $false
-}
-
-
