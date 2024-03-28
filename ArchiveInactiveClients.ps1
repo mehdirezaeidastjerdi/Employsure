@@ -9,7 +9,6 @@ $DocumentLibrary = $SourceURL
 $BatchSize = 2000
 
 $CsvAllClientsPath = "C:\temp\All clients_old.csv"
-$OutputCsvPath = "C:\temp\OutputResult.csv"
 
 try {
     Write-Host "Retrieve all files from the document library"
