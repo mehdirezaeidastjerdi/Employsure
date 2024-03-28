@@ -25,37 +25,41 @@ try {
         }
     }
 
+    Write-Host "All files:" -ForegroundColor Yellow
+    $AllFiles | Format-Table
+
+    $AllFiles | Export-Csv -Path "C:\temp\AllFiles.csv" -NoTypeInformation
     $CsvData1 = Import-Csv -Path $CsvAllClientsPath
 
     # Initialize arrays to store matching and unmatched items
     $MatchingItems = @()
-    $UnmatchedItems = @()
+    # $UnmatchedItems = @()
 
     # Loop through each item in the first CSV file
-    foreach ($item in $CsvData1[0..99]) {
+    foreach ($item in $CsvData1) {
         # Check if the item exists in the second CSV file
         $matchingItem = $AllFiles.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c }
-        if ($matchingItem) {
+        if ($matchingItem -and $matchingItem -isnot [array]) {
             # Add the matching item to the array
             $MatchingItems += New-Object PSObject -Property @{
-                ClientTradingName = $matchingItem
-            }
-        } else {
-            # Add the unmatched item to the array
-            $UnmatchedItems += New-Object PSObject -Property @{
-                ClientTradingName = $item.Trading_Name__c
-            }
+                ClientTradingName = $matchingItem.ToString()
+            }       
         }
     }
 
+    $UnmatchedItems = $AllFiles | Where-Object {$_.ClientTradingName -notin $MatchingItems.ClientTradingName}
+    
     Write-Host "Matching items:" -ForegroundColor Green
     $MatchingItems | Format-Table
 
     Write-Host "Unmatched items:" -ForegroundColor Yellow
-    $UnmatchedItems | Format-Table
+    $UnmatchedItems | Format-Table 
+
+    # Write-Host "Unmatched items:" -ForegroundColor Yellow
+    # $UnmatchedItems | Format-Table
 
     # Export the matching and unmatched items to separate CSV files
-    $MatchingItems | Export-Csv -Path $OutputCsvPath -NoTypeInformation
+    $MatchingItems | Export-Csv -Path "C:\temp\MatchedResult.csv" -NoTypeInformation
     $UnmatchedItems | Export-Csv -Path "C:\temp\UnmatchedResult.csv" -NoTypeInformation
 }
 catch {
