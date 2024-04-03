@@ -40,7 +40,7 @@ try {
     $MatchingItems = @()
     $timer = Measure-Command{
         # Loop through each item in the first CSV file
-        foreach ($item in $CsvData1[0..99]) {
+        foreach ($item in $CsvData1) {
             # Check if the item exists in the second CSV file
             $matchingItem = $AllSarepointItems.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c -or $_ -match $item.Employsure_Client__c}
             if ($matchingItem -and $matchingItem -isnot [array]) {
