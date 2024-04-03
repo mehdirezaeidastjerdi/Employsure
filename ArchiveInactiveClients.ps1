@@ -8,38 +8,41 @@ $TargetURL = "Archive"
 $DocumentLibrary = $SourceURL
 $BatchSize = 2000
 
-
-
+$SalesforceActiveClientsPath = "C:\temp\Salesforce Active Clients.csv"
+$AllSarepointItemsPath = "C:\temp\AllSarepointItems.csv"
+$MatchingItemsPath = "C:\temp\MatchedClients.csv"
+$UnmatchedItemsPath = "C:\temp\UnmatchedClients.csv"
 try {
     $timer = Measure-Command{
-        Write-Host "Retrieve all files from the document library"
-        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary" }
-        Write-Host "Batch selected..."
+    #     Write-Host "Retrieve all files from the document library"
+    #     $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary" }
+    #     Write-Host "Batch selected..."
 
-        $AllFiles = @()
+    #     $AllSarepointItems = @()
 
-        # Enumerate all list items to get file details
-        foreach ($Item in $ListItems) {
-            $AllFiles += New-Object PSObject -Property @{
-                ClientTradingName = $Item.FieldValues["FileLeafRef"]
-            }
+    #     # Enumerate all list items to get file details
+    #     foreach ($Item in $ListItems) {
+    #         $AllSarepointItems += New-Object PSObject -Property @{
+    #             ClientTradingName = $Item.FieldValues["FileLeafRef"]
+    #         }
+    # }
+
+    # # Write-Host "All files:" -ForegroundColor Yellow
+    # # $AllSarepointItems | Format-Table
+
+    # $AllSarepointItems | Export-Csv -Path $AllSarepointItemsPath -NoTypeInformation
     }
-
-    # Write-Host "All files:" -ForegroundColor Yellow
-    # $AllFiles | Format-Table
-
-    $AllFiles | Export-Csv -Path "C:\temp\AllFiles.csv" -NoTypeInformation
-    }
-
-    Write-host "Elaped time to get List of Items in DL : $($timer.TotalSeconds) seconds"
-    $CsvData1 = Import-Csv -Path "C:\temp\All clients_old.csv"
+    Write-host "Importing all sharepoint document library items..."
+    $AllSarepointItems = Import-Csv -Path $AllSarepointItemsPath    
+    Write-host "Elaped time to get List of all Items in DL : $($timer.TotalSeconds) seconds"
+    $CsvData1 = Import-Csv -Path $SalesforceActiveClientsPath
     # Initialize arrays to store matching and unmatched items
     $MatchingItems = @()
     $timer = Measure-Command{
         # Loop through each item in the first CSV file
-        foreach ($item in $CsvData1) {
+        foreach ($item in $CsvData1[0..99]) {
             # Check if the item exists in the second CSV file
-            $matchingItem = $AllFiles.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c }
+            $matchingItem = $AllSarepointItems.ClientTradingName | Where-Object { $_ -match $item.Trading_Name__c -or $_ -match $item.Employsure_Client__c}
             if ($matchingItem -and $matchingItem -isnot [array]) {
                 # Add the matching item to the array
                 $MatchingItems += New-Object PSObject -Property @{
@@ -48,19 +51,17 @@ try {
             }
         }
 
-        $UnmatchedItems = $AllFiles | Where-Object {$_.ClientTradingName -notin $MatchingItems.ClientTradingName}
-        
-        Write-Host "Matching items:" -ForegroundColor Green
-        $MatchingItems | Format-Table
-
-        Write-Host "Unmatched items:" -ForegroundColor Yellow
-        $UnmatchedItems | Format-Table 
-        # Export the matching and unmatched items to separate CSV files
-        $MatchingItems | Export-Csv -Path "C:\temp\MatchedResult.csv" -NoTypeInformation
-        $UnmatchedItems | Export-Csv -Path "C:\temp\UnmatchedResult.csv" -NoTypeInformation
-
-        Write-host "Elaped time to compare items : $($timer.TotalSeconds) seconds"
+        $UnmatchedItems = $AllSarepointItems | Where-Object {$_.ClientTradingName -notin $MatchingItems.ClientTradingName}        
     }
+    Write-host "Elaped time to compare items : $($timer.TotalSeconds) seconds"
+    Write-Host "Matching items:" -ForegroundColor Green
+    $MatchingItems | Format-Table
+
+    Write-Host "Unmatched items:" -ForegroundColor Yellow
+    $UnmatchedItems | Format-Table 
+    # Export the matching and unmatched items to separate CSV files
+    $MatchingItems | Export-Csv -Path $MatchingItemsPath -NoTypeInformation
+    $UnmatchedItems | Export-Csv -Path $UnmatchedItemsPath -NoTypeInformation
 }
 catch {
     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
