@@ -14,25 +14,25 @@ $MatchingItemsPath = "C:\temp\Matched.csv"
 $UnmatchedItemsPath = "C:\temp\Unmatched.csv"
 try {
     $timer = Measure-Command{
-        Write-Host "Retrieve all files from the document library"
-        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary" }
-        Write-Host "Batch selected..."
+    #     Write-Host "Retrieve all files from the document library"
+    #     $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary" }
+    #     Write-Host "Batch selected..."
 
-        $AllSarepointItems = @()
+    #     $AllSarepointItems = @()
 
-        # Enumerate all list items to get file details
-        foreach ($Item in $ListItems) {
-            $AllSarepointItems += New-Object PSObject -Property @{
-                ClientTradingName = $Item.FieldValues["FileLeafRef"]
-            }
-    }
+    #     # Enumerate all list items to get file details
+    #     foreach ($Item in $ListItems) {
+    #         $AllSarepointItems += New-Object PSObject -Property @{
+    #             ClientTradingName = $Item.FieldValues["FileLeafRef"]
+    #         }
+    # }
 
-    # Write-Host "All files:" -ForegroundColor Yellow
-    # $AllSarepointItems | Format-Table
+    # # Write-Host "All files:" -ForegroundColor Yellow
+    # # $AllSarepointItems | Format-Table
 
-    $AllSarepointItems | Export-Csv -Path $AllSarepointItemsPath -NoTypeInformation
-        # Write-host "Importing all sharepoint document library items..."
-        # $AllSarepointItems = Import-Csv -Path $AllSarepointItemsPath    
+    # $AllSarepointItems | Export-Csv -Path $AllSarepointItemsPath -NoTypeInformation
+    #     # Write-host "Importing all sharepoint document library items..."
+        $AllSarepointItems = Import-Csv -Path $AllSarepointItemsPath    
     }
     
     Write-host "Elaped time to get List of all Items in DL : $($timer.TotalSeconds) seconds"
@@ -44,33 +44,36 @@ try {
     $Unmatched = @()
     $timer = Measure-Command{
         # Loop over each row in the first CSV file
-        foreach ($row1 in $SalesforceActiveClient[0..200]) {
+        foreach ($row1 in $AllSarepointItems) {
             
             $foundMatch = $false
-            foreach($row2 in $AllSarepointItems) {
+            foreach($row2 in $SalesforceActiveClient) {
+                
                 # Compare each combination of columns
-                foreach($property in $row1.PSObject.Properties){
-                    $Similarity = Compare-Object -ReferenceObject $property.Value -DifferenceObject $row2.ClientTradingName -IncludeEqual -SyncWindow 0
-                    Write-Host $Similarity.SideIndicator
+                if($row1.ClientTradingName -match $row2.Employsure_Client__c ){
                     # If similarity found
-                    if($Similarity.SideIndicator -eq "=="){
                         $Matched += $row1
                         $foundMatch = $true
                         break 
                     }
-                }
-                if($foundMatch){
-                    break
-                }
-                
+                elseif ( $row1.ClientTradingName -match $row2.Trading_Name__c ){
+                   # If similarity found
+                   $Matched += $row1
+                   $foundMatch = $true
+                   break
+                }                    
             }
+            
             if(-not $foundMatch){
                 $Unmatched += $row1
              }
+                
+        }
             
-        } #end of for 
             
-     }  #end of timer  
+        } #end of timer 
+            
+  
         
 
  

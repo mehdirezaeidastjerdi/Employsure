@@ -2,11 +2,11 @@
 # Below is a PowerShell script that achieves this:
 
 # Specify the paths to your CSV files
-$CsvFilePath1 = "C:\temp\SharePointTesting.csv"
-$CsvFilePath2 = "C:\temp\All clients.csv"
+$CsvFilePath1 = "C:\temp\Salesforce Active Clients.csv"
+$CsvFilePath2 = "C:\temp\AllSarepointItems.csv"
 
 # Specify the column header you want to compare (adjust as needed)
-$ColumnToCompare = "FileName"
+$ColumnToCompare = "Trading_Name__c"
 
 # Import the CSV data from both files
 $CsvData1 = Import-Csv -Path $CsvFilePath1
@@ -21,7 +21,7 @@ foreach ($row1 in $CsvData1) {
     $valueToCompare = $row1.$ColumnToCompare
 
     # Check if the value exists in the second CSV
-    if ($CsvData2.$ColumnToCompare -contains $valueToCompare) {
+    if ($CsvData2.$ColumnToCompare -match $valueToCompare) {
         # Add the matching row to the results
         $MatchingResults += $row1
     }
