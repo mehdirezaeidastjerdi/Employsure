@@ -1,17 +1,15 @@
-# Update-Module -Name "SharePointPnPPowerShellOnline" 
-Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/SharePointTesting" -UseWebLogin
-
 # Specify the name of your document library
 $SiteName = "SharePointTesting"
-$SourceURL = "DocLibrary1"
+$SourceURL = "Shared Documents"
 $TargetURL = "Archive"
 $DocumentLibrary = $SourceURL
 $BatchSize = 2000
 $SpecificDate = "2017-03-22"
-
+$FullSiteUrl = "https://employsure.sharepoint.com/sites/SharePointTesting"
+Connect-PnPOnline -Url $FullSiteUrl -UseWebLogin
 try {
     Write-Host "Retrieve all files from the document library"
-    $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary"  -and $_["Modified"] -lt $SpecificDate  } 
+    $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary"  } 
     Write-Host "Batch selected..."
     $AllFiles = @()
     # Enumerate all list items to get file details
@@ -37,7 +35,6 @@ try {
 
     foreach ($File in $ListItems) {
       $fileLeafRef = $File.FieldValues.FileLeafRef
-      Write-Host "'$fileLeafRef'"
       Copy-PnPFile -SourceUrl $SourceURL/$fileLeafRef -TargetUrl $TargetURL/$fileLeafRef -Force
     }
     Write-Host "All files successfully copied to destination." -ForegroundColor Green
