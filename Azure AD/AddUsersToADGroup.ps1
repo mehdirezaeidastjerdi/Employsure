@@ -7,7 +7,7 @@ Import-Module AzureAD
 Connect-AzureAD -AccountID "mehdi.rezaei.adm@employsure.com.au"
 
 #import a CSv with the list of users to be added to the group
-$list = Import-Csv "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Sharepoint\NZ List.csv"
+$list = Import-Csv "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Azure AD\NZ List.csv"
 
 #roll through the list to look up each user and add to the group. 
 foreach ($y in $list){
