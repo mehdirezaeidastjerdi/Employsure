@@ -14,7 +14,6 @@ try {
     Write-Host "Batch selected..."
     $AllFiles = @()
     # Enumerate all list items to get file details
-    
     foreach ($Item in $ListItems) {
         $AllFiles += New-Object PSObject -Property @{
         FileName = $Item.FieldValues["FileLeafRef"]
