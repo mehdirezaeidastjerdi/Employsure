@@ -1,6 +1,6 @@
 # Specify the name of your document library
 $SiteName = "SharePointTesting"
-$SourceURL = "Shared Documents"
+$SourceURL = "DocLibrary2"
 $TargetURL = "Archive"
 $DocumentLibrary = $SourceURL
 $BatchSize = 2000

@@ -2,18 +2,14 @@
 #Install-Module -Name "SharePointPnPPowerShellOnline"
 # Define variables for site name, source and target URLs, and document library
 $SiteName = "SharePointTesting"
-$SourceURL = "Shared Documents"
-$TargetURL = "Archive"
+$SourceURL = "DocLibrary2"
 $DocumentLibrary = $SourceURL
 
 # Connect to the specified SharePoint Online site using web login
-Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/$SiteName" -UseWebLogin
+Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/$SiteName" -Interactive
 
 # Define file paths for various CSV files
-$SalesforceActiveClientsPath = "C:\temp\Salesforce Active Clients.csv"
-$AllSarepointItemsPath = "C:\temp\test\AllSharepointItems.csv"
-$MatchingItemsPath = "C:\temp\Matched.csv"
-$UnmatchedItemsPath = "C:\temp\Unmatched.csv"
+$AllSarepointItemsPath = "C:\temp\test\AllItems_DocLibrary2.csv"
 $BatchSize = 2000
 # Try block to handle potential errors
 try {
@@ -22,15 +18,7 @@ try {
         Write-Host "Retrieve all files from the document library"
         
         # Retrieve list items from the specified document library, filtered by folder paths
-        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary" `
-            -or $_["FileDirRef"]  -eq "/sites/$SiteName/$DocumentLibrary/S" `
-            -or $_["FileDirRef"]  -eq "/sites/$SiteName/$DocumentLibrary/T" `
-            -or $_["FileDirRef"]  -eq "/sites/$SiteName/$DocumentLibrary/U" `
-            -or $_["FileDirRef"]  -eq "/sites/$SiteName/$DocumentLibrary/V" `
-            -or $_["FileDirRef"]  -eq "/sites/$SiteName/$DocumentLibrary/W" `
-            -or $_["FileDirRef"]  -eq "/sites/$SiteName/$DocumentLibrary/X" `
-            -or $_["FileDirRef"]  -eq "/sites/$SiteName/$DocumentLibrary/Y" `
-            -or $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary/Z"}
+        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary"}
         Write-Host "Batch selected..."
 
         # Initialize an array to store SharePoint items
