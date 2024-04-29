@@ -2,7 +2,7 @@
 $SiteName = "SharePointTesting"
 $SourceURL = "Shared Documents"
 $TargetURL = "Archive"
-$MatchedFilePath = "C:\temp\test\Matched_test.csv"
+$UnmatchedFilePath = "C:\temp\test\AllItems_DocLibrary2_Test.csv"
 $ArchivedItemsPath = "C:\temp\test\ArchivedItems.csv"
 $NotExistInSourceItemsPath = "C:\temp\test\NotExistInSourceItems.csv"
 $NotExistInDestItemsPath = "C:\temp\test\NotExistInDestItems.csv"
@@ -10,13 +10,13 @@ $FullSiteUrl = "https://employsure.sharepoint.com/sites/$SiteName"
 # Connect to SharePoint Online
 Connect-PnPOnline -Url $FullSiteUrl -UseWebLogin
 # Load the Excel data
-$Matched = Import-Csv $MatchedFilePath
+$Unmatched = Import-Csv $UnmatchedFilePath
 $ArchivedItems = @()
 $NotExistInSourceItems = @()
 $NotExistInDestItems = @()
 try {    
     # Iterate through each row in the Excel data
-    foreach ($Row in $Matched) {        
+    foreach ($Row in $Unmatched){        
         $fileLeafRef = $Row.'ClientTradingName'  # Replace with the actual column name containing file names
         $details = @{
             "Items" = $fileLeafRef
