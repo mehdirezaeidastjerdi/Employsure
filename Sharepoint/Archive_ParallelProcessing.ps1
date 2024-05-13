@@ -52,5 +52,5 @@ try {
     $CopiedItems | Export-Csv -Path $CopiedItemsPath -NoTypeInformation
     $NotExistInSourceItems | Export-Csv -Path $NotExistInSourceItemsPath -NoTypeInformation
     
-    # Disconnect-PnPOnline
+    Disconnect-PnPOnline
 }
