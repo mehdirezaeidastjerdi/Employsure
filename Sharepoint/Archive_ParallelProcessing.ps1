@@ -1,9 +1,9 @@
 # Install the SharePoint PnP PowerShell module if not already installed
 # Connect to SharePoint Online
-$SourceSite = "hs_au"
-$SourceLib = "Clients_DocLibrary"
+$SourceSite = "hs_au_copy"
+$SourceLib = "Clients_Copy"
 $DestSite = "hs_au_copy"
-$DestLib = "Test Library"
+$DestLib = "Test Library1"
 $MatchedFilePath = "C:\temp\test2\Matched_Test.csv"
 $CopiedItemsPath = "C:\temp\test2\CopiedItems.csv"
 $NotExistInSourceItemsPath = "C:\temp\test2\NotExistInSourceItems.csv"
