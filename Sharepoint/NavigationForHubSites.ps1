@@ -1,59 +1,49 @@
+# Install the PnP PowerShell module if not already installed
+# Install-Module -Name "PnP.PowerShell" -Force -SkipPublisherCheck
 
-# Variables
-$siteUrl = "https://employsure.sharepoint.com/sites/SharepointTestJembson"
-# Connect to the hub site
-Connect-PnPOnline -Url $siteUrl -UseWebLogin
-# Variables
-$navigationItems = @(
-    @{Title = "Client Engagement"; Url = "/sites/ClientEngagement"},
-    @{Title = "Employment Relations"; Url = "/sites/EmploymentRelations"},
-    @{Title = "Events"; Url = "/sites/Events"},
-    # @{Title = "Facilities"; Url = "/sites/facilities"},
-    @{Title = "Finance"; Url = "/sites/Finance"},
-    @{Title = "Health & Safety"; Url = "/sites/HealthSafety"},
-    @{Title = "HR"; Url = "/sites/HR"},
-    # @{Title = "Legal Services"; Url = "/sites/legal-services"},
-    @{Title = "Legal"; Url = "/sites/LegalServices"},
-    @{Title = "Management"; Url = "/sites/Management"},
-    @{Title = "Sales"; Url = "/sites/Sales"},
-    @{Title = "Technology"; Url = "/sites/Technology"}
+# Connect to SharePoint Online
+$siteUrl = "https://employsure.sharepoint.com/sites"
+$siteName = "SalesHubSite"
+Connect-PnPOnline -Url "$siteUrl/$siteName" -Interactive
+
+# Define the parent node (label)
+$parentNodeTitle = "Internal Department"
+
+# Add the parent node to the Top Navigation as a label
+Write-Host "Adding parent node (label): $parentNodeTitle"
+$parentNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $parentNodeTitle -Url "#"
+if ($null -eq $parentNode) {
+    Write-Host "Failed to create parent node: $parentNodeTitle"
+    exit
+} else {
+    Write-Host "Successfully created parent node: $parentNodeTitle"
+}
+
+# Define the child nodes to be added under the parent node
+$childNodes = @(
+    @{Title = "Management"; Url = "$siteUrl/Management"},
+    @{Title = "Legal"; Url = "$siteUrl/Legal"},
+    @{Title = "Events"; Url = "$siteUrl/Events"},
+    @{Title = "Finance"; Url = "$siteUrl/Finance"},
+    @{Title = "Facilities"; Url = "$siteUrl/Facilities"},
+    @{Title = "HR"; Url = "$siteUrl/HR"},
+    @{Title = "Sales"; Url = "$siteUrl/Sales"},
+    @{Title = "Technology"; Url = "$siteUrl/Technology"}
 )
 
-# Function to add navigation node
-function Add-NavigationNode {
-    param (
-        [string]$parentNodeTitle,
-        [string]$nodeTitle,
-        [string]$nodeUrl
-    )
-   
-    # Get the parent node if specified
-    if ($parentNodeTitle) {
-        $parentNode = Get-PnPNavigationNode -Location "TopNavigationBar" | Where-Object { $_.Title -eq $parentNodeTitle }
-        if ($parentNode) {
-            Add-PnPNavigationNode -Title $nodeTitle -Url $nodeUrl -Location "TopNavigationBar" -Parent $parentNode.Id
+# Add the child nodes under the parent node
+foreach ($childNode in $childNodes) {
+    Write-Host "Adding child node: $($childNode.Title)"
+    try {
+        $newChildNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $childNode.Title -Url $childNode.Url -Parent $parentNode
+        if ($null -eq $newChildNode) {
+            Write-Host "Failed to create child node: $($childNode.Title)"
         } else {
-            Write-Host "Parent node '$parentNodeTitle' not found."
+            Write-Host "Successfully created child node: $($childNode.Title)"
         }
-    } else {
-        Add-PnPNavigationNode -Title $nodeTitle -Url $nodeUrl -Location "TopNavigationBar"
+    } catch {
+        Write-Host "Error creating child node: $($childNode.Title). Error: $_"
     }
 }
-# Connect to the specific site
-Connect-PnPOnline -Url $siteUrl 
 
-# Remove existing navigation nodes
-$existingNodes = Get-PnPNavigationNode -Location "TopNavigationBar"
-foreach ($node in $existingNodes) {
-    Remove-PnPNavigationNode -Identity $node.Id -Location "TopNavigationBar" -Force
-}
-
-# Add new navigation nodes
-foreach ($item in $navigationItems) {
-    Add-NavigationNode -parentNodeTitle $null -nodeTitle $item.Title -nodeUrl $item.Url
-}
-
-Write-Host "Navigation updated successfully for site $siteUrl."
-
-disconnect-PnPOnline
-
+Write-Host "Top navigation nodes added successfully."
