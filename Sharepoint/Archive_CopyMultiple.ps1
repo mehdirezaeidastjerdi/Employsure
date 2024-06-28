@@ -19,8 +19,8 @@ $NotExistInSourceItems = @()
 $CopiedItems = @()
 
 try {
-    $startIndex = 11910
-    $endIndex = 12001
+    $startIndex = 1
+    $endIndex = 800
     $batchSize = 50
     $batchCount = [math]::Ceiling(($endIndex - $startIndex + 1) / $batchSize)
 

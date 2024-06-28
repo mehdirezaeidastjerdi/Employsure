@@ -2,16 +2,16 @@
 # Install-Module -Name "SharePointPnPPowerShellOnline"
 
 # Define variables for site name, source and target URLs, and document library
-$SiteName = "file_server_clients"
-$SourceURL = "File Server Clients"
+$SiteName = "teams/ER"
+$SourceURL = "Clients"
 $DocumentLibrary = $SourceURL
 
-# Connect to the specified SharePoint Online site using web login
-Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/$SiteName" -Interactive
+# Connect to the specified SharePoint Online Teams site using web login
+Connect-PnPOnline -Url "https://employsure.sharepoint.com/$SiteName" -Interactive
 
 # Define file paths for various CSV files
-$AllSharepointItemsPath = "C:\temp\test\newsharepointitems.csv"
-$PageSize = 10 # Set the number of items to retrieve
+$AllSharepointItemsPath = "C:\temp\ER\ERAllSiteClients.csv"
+$PageSize = 2000 # Set the number of items to retrieve
 
 # Try block to handle potential errors
 try {
@@ -20,7 +20,13 @@ try {
         Write-Host "Retrieve all files from the document library"
         
         # Retrieve list items from the specified document library, limited by the ItemCount
-        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $PageSize -Fields FileLeafRef | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary"}
+        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $PageSize -Fields FileLeafRef, FileDirRef
+        
+        if ($ListItems -eq $null) {
+            Write-Host "No items retrieved from the document library" -ForegroundColor Yellow
+            return
+        }
+        
         Write-Host "Batch selected..."
 
         # Initialize an array to store SharePoint items
@@ -28,9 +34,16 @@ try {
 
         # Loop through each item and create a custom object with the client trading name
         foreach ($Item in $ListItems) {
-            $AllSharepointItems += New-Object PSObject -Property @{
-                ClientTradingName = $Item.FieldValues["FileLeafRef"]
+            if ($Item["FileDirRef"] -eq "/$SiteName/$DocumentLibrary") {
+                $AllSharepointItems += New-Object PSObject -Property @{
+                    ClientTradingName = $Item.FieldValues["FileLeafRef"]
+                }
             }
+        }
+        
+        if ($AllSharepointItems.Count -eq 0) {
+            Write-Host "No items matched the specified directory reference" -ForegroundColor Yellow
+            return
         }
     }
     # Export the array of SharePoint items to a CSV file
