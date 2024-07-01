@@ -21,14 +21,22 @@ if ($null -eq $parentNode) {
 
 # Define the child nodes to be added under the parent node
 $childNodes = @(
-    @{Title = "Management"; Url = "$siteUrl/Management"},
-    @{Title = "Legal"; Url = "$siteUrl/Legal"},
-    @{Title = "Events"; Url = "$siteUrl/Events"},
+    @{Title = "Clients AU"; Url = "$siteUrl/hs_au"},
+    @{Title = "Clients NZ"; Url = "$siteUrl/hs_nz"}
+    @{Title = "Management"; Url = "$siteUrl/management"},
+    @{Title = "Legal"; Url = "$siteUrl/legal"},
+    @{Title = "Marketing and Events"; Url = "$siteUrl/events"},
     @{Title = "Finance"; Url = "$siteUrl/Finance"},
-    @{Title = "Facilities"; Url = "$siteUrl/Facilities"},
+    @{Title = "Facilities"; Url = "$siteUrl/TalentAcquisitionANZ"},
+    @{Title = "Payroll"; Url = "$siteUrl/Payroll"},
     @{Title = "HR"; Url = "$siteUrl/HR"},
     @{Title = "Sales"; Url = "$siteUrl/Sales"},
-    @{Title = "Technology"; Url = "$siteUrl/Technology"}
+    @{Title = "Technology"; Url = "$siteUrl/Technology"},
+    @{Title = "Clients Engagement"; Url = "https://employsure.sharepoint.com/teams/ClientOnboardingANZ"},
+    @{Title = "Employment Ralations AU"; Url = "$siteUrl/ER_AU"},
+    @{Title = "Employment Ralations NZ"; Url = "$siteUrl/ER_NZ"},
+    @{Title = "Health & Safety AU"; Url = "$siteUrl/healthsafety_au"},
+    @{Title = "Health & Safety NZ"; Url = "$siteUrl/healthsafety_nz"}
 )
 
 # Add the child nodes under the parent node
