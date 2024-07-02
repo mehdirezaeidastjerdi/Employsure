@@ -1,30 +1,33 @@
-# Courtesy of SeeSmitty - https://github.com/SeeSmitty/Powershell/blob/main/Add-UsersToAzureADGroup.ps1
-
-#connect to azure ad
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-#Import-Module AzureAD
+# Import the AzureAD.Standard.Preview module
 Import-Module AzureAD
-Connect-AzureAD -AccountID "mehdi.rezaei.adm@employsure.com.au"
 
-#import a CSv with the list of users to be added to the group
-$list = Import-Csv "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Azure AD\NZ List.csv"
+# Connect to Azure AD
+Connect-AzureAD 
 
-#roll through the list to look up each user and add to the group. 
-foreach ($y in $list){
-    $group = $y.group
-    $GroupObjectID = Get-AzureADGroup -SearchString $group | Select -Property ObjectID
-    
-    $y2 = Get-AzureADUser -ObjectId $y.userPrincipalName | Select -Property ObjectID
-    $members = Get-AzureADGroupMember -ObjectId $GroupObjectID.ObjectID -All $true
-   
-    if ($y2.ObjectID -in $members.ObjectID) {
-        Write-Host $y.userPrincipalName'is already in the Group' -ForegroundColor Yellow
-    }else{
-        Add-AzureADGroupMember -ObjectId $GroupObjectID.ObjectID -RefObjectId $y2.ObjectId -InformationAction SilentlyContinue
-        Write-Host $y.userPrincipalName'has been added to the Group' -ForegroundColor Green
+# Path to the CSV file
+# the csv file must contain these columns :userPrincipalName and group
+$csvPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Azure AD\Users.csv"
+
+# Group ID of the Azure AD group
+$groupId = "83958f71-d617-4b10-87ed-b3fe80509454"
+
+# Import CSV
+$users = Import-Csv -Path $csvPath
+
+# Iterate over each user and add them to the group
+foreach ($user in $users) {
+    $userPrincipalName = $user.UserPrincipalName
+    try {
+        # Get user object
+        $azureAdUser = Get-AzureADUser -Filter "UserPrincipalName eq '$userPrincipalName'"
+        if ($azureAdUser) {
+            # Add user to group
+            Add-AzureADGroupMember -ObjectId $groupId -RefObjectId $azureAdUser.ObjectId
+            Write-Output "Successfully added $userPrincipalName to the group."
+        } else {
+            Write-Output "User $userPrincipalName not found."
+        }
+    } catch {
+        Write-Output "Failed to add $userPrincipalName to the group. Error: $_"
     }
-   
 }
-
-#Disconnect Azure AD
-Disconnect-AzureAD
