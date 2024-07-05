@@ -1,4 +1,8 @@
-# Import the AzureAD.Standard.Preview module
+# This script imports a list of users from a CSV file and adds them to a specified Azure AD group.
+# The CSV file should contain columns 'userPrincipalName' and 'group'.
+# Ensure that the AzureAD module is installed and that you have the necessary permissions to manage group memberships.
+# Import the AzureAD
+
 Import-Module AzureAD
 
 # Connect to Azure AD

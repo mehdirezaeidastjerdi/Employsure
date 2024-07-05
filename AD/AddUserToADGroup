@@ -1,0 +1,41 @@
+# This script imports a list of users from a CSV file and adds them to a specified Active Directory group.
+# The CSV file should contain columns 'userPrincipalName' and 'group'.
+# Ensure that the ActiveDirectory module is installed and that you have the necessary permissions to manage group memberships.
+
+# Author: Mehdi Rezaei
+# Date: [03072024]
+
+
+#*************************************************
+# ************************************************** 
+# Please run it in domain controller server 
+#*************************************************
+# ************************************************** 
+
+Import-Module ActiveDirectory
+
+# Path to the CSV file
+# The CSV file must contain these columns: userPrincipalName and group
+$csvPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Azure AD\Users.csv"
+# Group name of the Active Directory group
+$groupName = "TestGroup123"
+# Import CSV
+$users = Import-Csv -Path $csvPath
+
+# Iterate over each user and add them to the group
+foreach ($user in $users) {
+    $userPrincipalName = $user.UserPrincipalName
+    try {
+        # Get user object
+        $adUser = Get-ADUser -Filter "UserPrincipalName -eq '$userPrincipalName'"
+        if ($adUser) {
+            # Add user to group
+            Add-ADGroupMember -Identity $groupName -Members $adUser
+            Write-Output "Successfully added $userPrincipalName to the group."
+        } else {
+            Write-Output "User $userPrincipalName not found."
+        }
+    } catch {
+        Write-Output "Failed to add $userPrincipalName to the group. Error: $_"
+    }
+}
