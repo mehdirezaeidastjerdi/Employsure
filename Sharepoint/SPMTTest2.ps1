@@ -1,4 +1,5 @@
 
+# Resource: https://learn.microsoft.com/en-us/sharepointmigration/overview-spmt-ps-cmdlets
 # Define SharePoint target
 $SPOUrl = "https://employsure.sharepoint.com/sites/Testsite"
 $TargetListName = "Shared Documents"
