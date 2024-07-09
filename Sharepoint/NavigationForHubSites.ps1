@@ -4,8 +4,20 @@
 # Connect to SharePoint Online
 $siteUrl = "https://employsure.sharepoint.com/sites"
 # $siteName = "SalesHubSite"
-$siteName = "EmploymentRelations"
-Connect-PnPOnline -Url "$siteUrl/$siteName" -Interactive
+# $siteName = "EmploymentRelations"
+# $siteName = "HealthSafety"
+# $siteName = "ClientEngagement"
+# $siteName = "KnowledgeHub"
+# $siteName = "legal"
+# $siteName = "events"
+# $siteName = "Finance"
+# $siteName = "Management"
+# $siteName = "TalentAcquisitionANZ"
+# $siteName = "LegalServices"
+
+
+# Connect-PnPOnline -Url "$siteUrl/$siteName" -Interactive
+Connect-PnPOnline -Url $siteUrl/$siteName -Interactive
 
 function Add-ParentNode {
     param (
@@ -37,15 +49,15 @@ function Add-ParentNode {
 $intranetNodeTitle = "Intranet"
 $intranetNodeUrl = "https://employsure.sharepoint.com"
 
-$parentNodeTitle = "Internal Departments"
-$parentNodeUrl = "$siteUrl/SalesHubSite"
+$InternalDepartmentsNodeTitle = "Internal Departments"
+$InternalDepartmentsNodeUrl = "#"
 
 $knowledgeHubTitle = "Knowledge Hub"
-$knowledgeHubUrl = "https://employsure.sharepoint.com/sites/KnowledgeHub"
+$knowledgeHubUrl = "$siteUrl/KnowledgeHub"
 
 # Add the parent nodes
 $intranetNode = Add-ParentNode -parentNodeTitle $intranetNodeTitle -parentNodeUrl $intranetNodeUrl
-$parentNode = Add-ParentNode -parentNodeTitle $parentNodeTitle -parentNodeUrl $parentNodeUrl
+$InternalDepartmentsNode = Add-ParentNode -parentNodeTitle $InternalDepartmentsNodeTitle -parentNodeUrl $InternalDepartmentsNodeUrl
 $knowledgeHubNode = Add-ParentNode -parentNodeTitle $knowledgeHubTitle -parentNodeUrl $knowledgeHubUrl
 
 $childNodes = @(
@@ -71,7 +83,7 @@ $childNodes = @(
 foreach ($childNode in $childNodes) {
     Write-Host "Adding child node: $($childNode.Title)"
     try {
-        $newChildNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $childNode.Title -Url $childNode.Url -Parent $parentNode
+        $newChildNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $childNode.Title -Url $childNode.Url -Parent $InternalDepartmentsNode
         if ($null -eq $newChildNode) {
             Write-Host "Failed to create child node: $($childNode.Title)"
         } else {
@@ -83,3 +95,7 @@ foreach ($childNode in $childNodes) {
 }
 
 Write-Host "Top navigation nodes added successfully."
+
+
+
+
