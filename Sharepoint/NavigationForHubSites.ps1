@@ -3,30 +3,50 @@
 
 # Connect to SharePoint Online
 $siteUrl = "https://employsure.sharepoint.com/sites"
-# $siteName = "EmploymentRelations"
+# $siteName = "SalesHubSite"
 $siteName = "EmploymentRelations"
 Connect-PnPOnline -Url "$siteUrl/$siteName" -Interactive
 
-# Define the parent node (label)
+function Add-ParentNode {
+    param (
+        [string]$parentNodeTitle,
+        [string]$parentNodeUrl
+    )
+
+    # Check if the parent node already exists and remove it if it does
+    $existingParentNodes = Get-PnPNavigationNode -Location "TopNavigationBar" | Where-Object { $_.Title -eq $parentNodeTitle }
+    foreach ($node in $existingParentNodes) {
+        Write-Host "Removing existing parent node: $($node.Title)"
+        Remove-PnPNavigationNode -Identity $node -Force
+    }
+
+    # Add the parent node to the Top Navigation as a label
+    Write-Host "Adding parent node (label): $parentNodeTitle"
+    $parentNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $parentNodeTitle -Url $parentNodeUrl
+    if ($null -eq $parentNode) {
+        Write-Host "Failed to create parent node: $parentNodeTitle"
+        exit
+    } else {
+        Write-Host "Successfully created parent node: $parentNodeTitle"
+    }
+
+    return $parentNode
+}
+
+# Define parent nodes with their respective URLs
+$intranetNodeTitle = "Intranet"
+$intranetNodeUrl = "https://employsure.sharepoint.com"
+
 $parentNodeTitle = "Internal Departments"
+$parentNodeUrl = "$siteUrl/SalesHubSite"
+
 $knowledgeHubTitle = "Knowledge Hub"
+$knowledgeHubUrl = "https://employsure.sharepoint.com/sites/KnowledgeHub"
 
-# Check if the parent node already exists and remove it if it does
-$existingParentNodes = Get-PnPNavigationNode -Location "TopNavigationBar" | Where-Object { $_.Title -eq $parentNodeTitle }
-foreach ($node in $existingParentNodes) {
-    Write-Host "Removing existing parent node: $($node.Title)"
-    Remove-PnPNavigationNode -Identity $node -Force
-}
-
-# Add the parent node to the Top Navigation as a label
-Write-Host "Adding parent node (label): $parentNodeTitle"
-$parentNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $parentNodeTitle -Url "#"
-if ($null -eq $parentNode) {
-    Write-Host "Failed to create parent node: $parentNodeTitle"
-    exit
-} else {
-    Write-Host "Successfully created parent node: $parentNodeTitle"
-}
+# Add the parent nodes
+$intranetNode = Add-ParentNode -parentNodeTitle $intranetNodeTitle -parentNodeUrl $intranetNodeUrl
+$parentNode = Add-ParentNode -parentNodeTitle $parentNodeTitle -parentNodeUrl $parentNodeUrl
+$knowledgeHubNode = Add-ParentNode -parentNodeTitle $knowledgeHubTitle -parentNodeUrl $knowledgeHubUrl
 
 $childNodes = @(
     @{Title = "Clients AU"; Url = "$siteUrl/hs_au"},
@@ -60,22 +80,6 @@ foreach ($childNode in $childNodes) {
     } catch {
         Write-Host "Error creating child node: $($childNode.Title). Error: $_"
     }
-}
-
-# Check if the parent node already exists and remove it if it does
-$existingParentNodes = Get-PnPNavigationNode -Location "TopNavigationBar" | Where-Object { $_.Title -eq $knowledgeHubTitle }
-foreach ($node in $existingParentNodes) {
-    Write-Host "Removing existing parent node: $($node.Title)"
-    Remove-PnPNavigationNode -Identity $node -Force
-}
-# Add the Knowledge Hub node to the Top Navigation as a label
-Write-Host "Adding parent node (label): $knowledgeHubTitle"
-$knowledgeHubNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $knowledgeHubTitle -Url "$siteurl/KnowledgeHub"
-if ($null -eq $knowledgeHubNode) {
-    Write-Host "Failed to create parent node: $knowledgeHubTitle"
-    exit
-} else {
-    Write-Host "Successfully created parent node: $knowledgeHubTitle"
 }
 
 Write-Host "Top navigation nodes added successfully."
