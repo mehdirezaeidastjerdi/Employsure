@@ -13,8 +13,11 @@ $siteUrl = "https://employsure.sharepoint.com/sites"
 # $siteName = "Finance"
 # $siteName = "Management"
 # $siteName = "TalentAcquisitionANZ"
-# $siteName = "LegalServices"
-# teams/Face2Face  #this is a team site
+$siteName = "LegalServices"
+
+# $hubSitesPath = ""
+# $hubSites = Import-Csv -Path $hubSitesPath
+
 
 
 # Connect-PnPOnline -Url "$siteUrl/$siteName" -Interactive
@@ -37,18 +40,17 @@ function Add-ParentNode {
     Write-Host "Adding parent node (label): $parentNodeTitle"
     $parentNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $parentNodeTitle -Url $parentNodeUrl
     if ($null -eq $parentNode) {
-        Write-Host "Failed to create parent node: $parentNodeTitle"
+        Write-Host "Failed to create parent node: $parentNodeTitle" -ForegroundColor Red
         exit
     } else {
-        Write-Host "Successfully created parent node: $parentNodeTitle"
+        Write-Host "Successfully created parent node: $parentNodeTitle" -ForegroundColor Green
     }
-
-    return $parentNode
+    return $parentNode.Id
 }
 
 # Define parent nodes with their respective URLs
-# $intranetNodeTitle = "Intranet"
-# $intranetNodeUrl = "https://employsure.sharepoint.com"
+$intranetNodeTitle = "Intranet"
+$intranetNodeUrl = "https://employsure.sharepoint.com"
 
 $InternalDepartmentsNodeTitle = "Internal Departments"
 $InternalDepartmentsNodeUrl = "#"
@@ -57,14 +59,21 @@ $knowledgeHubTitle = "Knowledge Hub"
 $knowledgeHubUrl = "$siteUrl/KnowledgeHub"
 
 # Add the parent nodes
-# $intranetNode = Add-ParentNode -parentNodeTitle $intranetNodeTitle -parentNodeUrl $intranetNodeUrl
+$intranetNode = Add-ParentNode -parentNodeTitle $intranetNodeTitle -parentNodeUrl $intranetNodeUrl
+
 $InternalDepartmentsNode = Add-ParentNode -parentNodeTitle $InternalDepartmentsNodeTitle -parentNodeUrl $InternalDepartmentsNodeUrl
+
 $knowledgeHubNode = Add-ParentNode -parentNodeTitle $knowledgeHubTitle -parentNodeUrl $knowledgeHubUrl
 
 $childNodes = @(
+    # @{Title = "Management"; Url = "$siteUrl/management"},
     @{Title = "Clients AU"; Url = "$siteUrl/hs_au"},
     @{Title = "Clients NZ"; Url = "$siteUrl/hs_nz"},
-    @{Title = "Management"; Url = "$siteUrl/management"},
+    @{Title = "Health & Safety AU"; Url = "$siteUrl/healthsafety_au"},
+    @{Title = "Health & Safety NZ"; Url = "$siteUrl/healthsafety_nz"},
+    @{Title = "Employment Relations AU"; Url = "$siteUrl/ER_AU"},
+    @{Title = "Employment Relations NZ"; Url = "$siteUrl/ER_NZ"},
+    @{Title = "Client Onboarding"; Url = "https://employsure.sharepoint.com/teams/ClientOnboardingANZ"},
     @{Title = "Law"; Url = "$siteUrl/Law-au"},
     # @{Title = "Marketing and Events"; Url = "$siteUrl/events"},
     # @{Title = "Finance"; Url = "$siteUrl/Finance"},
@@ -72,12 +81,7 @@ $childNodes = @(
     @{Title = "Payroll"; Url = "$siteUrl/Payroll"},
     # @{Title = "HR"; Url = "$siteUrl/HR"},
     @{Title = "Sales"; Url = "$siteUrl/Sales"},
-    # @{Title = "Technology"; Url = "$siteUrl/Technology"},
-    @{Title = "Client Onboarding"; Url = "https://employsure.sharepoint.com/teams/ClientOnboardingANZ"},
-    @{Title = "Employment Relations AU"; Url = "$siteUrl/ER_AU"},
-    @{Title = "Employment Relations NZ"; Url = "$siteUrl/ER_NZ"},
-    @{Title = "Health & Safety AU"; Url = "$siteUrl/healthsafety_au"},
-    @{Title = "Health & Safety NZ"; Url = "$siteUrl/healthsafety_nz"},
+    # @{Title = "Technology"; Url = "$siteUrl/Technology"},   
     @{Title = "Face 2 Face"; Url = "https://employsure.sharepoint.com/teams/Face2Face"},
     @{Title = "Client Experience"; Url = "$siteUrl/CE_AU"},
     @{Title = "Mutual"; Url = "https://employsure.sharepoint.com/teams/mutual.team"}
@@ -89,12 +93,12 @@ foreach ($childNode in $childNodes) {
     try {
         $newChildNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $childNode.Title -Url $childNode.Url -Parent $InternalDepartmentsNode
         if ($null -eq $newChildNode) {
-            Write-Host "Failed to create child node: $($childNode.Title)"
+            Write-Host "Failed to create child node: $($childNode.Title)" -ForegroundColor Red
         } else {
-            Write-Host "Successfully created child node: $($childNode.Title)"
+            Write-Host "Successfully created child node: $($childNode.Title)" -ForegroundColor Green
         }
     } catch {
-        Write-Host "Error creating child node: $($childNode.Title). Error: $_"
+        Write-Host "Error creating child node: $($childNode.Title). Error: $_" -ForegroundColor Red
     }
 }
 

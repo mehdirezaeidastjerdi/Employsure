@@ -1,7 +1,5 @@
-# Uninstall-Module SharePointPnPPowerShellOnline -AllVersions
-# Install-Module  PnP.PowerShell 
 # Prerequisites
-$rootDirectory = "C:\Modified data"
+$rootDirectory = "Z:\Modified data"
 $startDate = Get-Date "2024-07-18"
 # $endDate = Get-Date "2024-07-19"
 $outputCsv = "C:\Temp\ModifiedFoldersAfter-18072024.csv"
@@ -9,7 +7,7 @@ $results = @()
 
 function Get-ModifiedItems($directory, $startDate, $endDate) {
     Get-ChildItem -Path $directory -Directory | Where-Object {
-        $_.LastWriteTime -ge $startDate -and $_.LastWriteTime -le $endDate
+        $_.LastWriteTime -ge $startDate 
     }
 }
 
@@ -40,7 +38,7 @@ $siteUrl = "https://employsure.sharepoint.com/sites/Testsite"
 Connect-PnPOnline -Url $siteUrl -UseWebLogin
 
 # Function to upload files
-function Upload-FilesToSharePoint {
+function  UploadFilesToSharePoint{
     param (
         [string]$sourceFolder,
         [string]$destinationFolder
@@ -53,9 +51,9 @@ function Upload-FilesToSharePoint {
 
         if ($item.PSIsContainer) {
             # Create folder if it doesn't exist
-            $folderExists = Get-PnPFolder -Url $destinationPath -ErrorAction SilentlyContinue
+            $folderExists = Test-PnPListItem -List $destinationLibrary -ItemUrl $destinationPath
             if (-not $folderExists) {
-                New-PnPListItem -List $destinationLibrary -Values @{"Title"=$relativePath;"FileLeafRef"=$relativePath;"ContentTypeId"="0x0120"}
+                New-PnPFolder -Name $destinationPath -Folder (Split-Path $destinationPath -Parent)
             }
         } else {
             Write-Host "Uploading file $($item.FullName) to $destinationPath"
@@ -74,13 +72,13 @@ foreach ($result in $results) {
     Write-Host "Copying $sourceFolder to $destinationFolder"
 
     # Ensure the destination folder exists
-    $folderExists = Get-PnPFolder -Url $destinationFolder -ErrorAction SilentlyContinue
+    $folderExists = Test-PnPListItem -List $destinationLibrary -ItemUrl $destinationFolder
     if (-not $folderExists) {
-        New-PnPListItem -List $destinationLibrary -Values @{"Title"=$(Split-Path $destinationFolder -Leaf);"FileLeafRef"=$(Split-Path $destinationFolder -Leaf);"ContentTypeId"="0x0120"}
+        New-PnPFolder -Name $destinationFolder -Folder (Split-Path $destinationFolder -Parent)
     }
 
     # Upload files to SharePoint
-    Upload-FilesToSharePoint -sourceFolder $sourceFolder -destinationFolder $destinationFolder
+    UploadFilesToSharePoint -sourceFolder $sourceFolder -destinationFolder $destinationFolder
 }
 
 Write-Host "Modified Folders:" -BackgroundColor Yellow
