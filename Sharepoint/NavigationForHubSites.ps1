@@ -1,27 +1,7 @@
 # Install the PnP PowerShell module if not already installed
 # Install-Module -Name "PnP.PowerShell" -Force -SkipPublisherCheck
-
-# Connect to SharePoint Online
-$siteUrl = "https://employsure.sharepoint.com/sites"
-# $siteName = "SalesHubSite"
-# $siteName = "EmploymentRelations"
-# $siteName = "HealthSafety"
-# $siteName = "ClientEngagement"
-# $siteName = "KnowledgeHub"
-# $siteName = "legal"
-# $siteName = "events"
-# $siteName = "Finance"
-# $siteName = "Management"
-# $siteName = "TalentAcquisitionANZ"
-$siteName = "LegalServices"
-
-# $hubSitesPath = ""
-# $hubSites = Import-Csv -Path $hubSitesPath
-
-
-
-# Connect-PnPOnline -Url "$siteUrl/$siteName" -Interactive
-Connect-PnPOnline -Url $siteUrl/$siteName -Interactive
+$hubSitesPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Sharepoint\HubSites.csv"
+$hubSites = Import-Csv -Path $hubSitesPath
 
 function Add-ParentNode {
     param (
@@ -48,61 +28,72 @@ function Add-ParentNode {
     return $parentNode.Id
 }
 
-# Define parent nodes with their respective URLs
-$intranetNodeTitle = "Intranet"
-$intranetNodeUrl = "https://employsure.sharepoint.com"
+foreach($hubSite in $hubSites){
 
-$InternalDepartmentsNodeTitle = "Internal Departments"
-$InternalDepartmentsNodeUrl = "#"
+    $siteUrl = $hubSite.siteUrl
+    # Connect-PnPOnline -Url "$siteUrl/$siteName" -Interactive
+    Connect-PnPOnline -Url $siteUrl -Interactive
+    Write-Host "Connected and adding Navigation to $siteUrl" -f Cyan
+    # Define parent nodes with their respective URLs
+    $intranetNodeTitle = "Intranet"
+    $intranetNodeUrl = "https://employsure.sharepoint.com"
 
-$knowledgeHubTitle = "Knowledge Hub"
-$knowledgeHubUrl = "$siteUrl/KnowledgeHub"
+    $InternalDepartmentsNodeTitle = "Internal Departments"
+    $InternalDepartmentsNodeUrl = "#"
 
-# Add the parent nodes
-$intranetNode = Add-ParentNode -parentNodeTitle $intranetNodeTitle -parentNodeUrl $intranetNodeUrl
+    $knowledgeHubTitle = "Knowledge Hub"
+    $knowledgeHubUrl = "https://employsure.sharepoint.com/sites/KnowledgeHub"
 
-$InternalDepartmentsNode = Add-ParentNode -parentNodeTitle $InternalDepartmentsNodeTitle -parentNodeUrl $InternalDepartmentsNodeUrl
+    # Add the parent nodes
+    $intranetNode = Add-ParentNode -parentNodeTitle $intranetNodeTitle -parentNodeUrl $intranetNodeUrl
 
-$knowledgeHubNode = Add-ParentNode -parentNodeTitle $knowledgeHubTitle -parentNodeUrl $knowledgeHubUrl
+    $InternalDepartmentsNode = Add-ParentNode -parentNodeTitle $InternalDepartmentsNodeTitle -parentNodeUrl $InternalDepartmentsNodeUrl
 
-$childNodes = @(
-    # @{Title = "Management"; Url = "$siteUrl/management"},
-    @{Title = "Clients AU"; Url = "$siteUrl/hs_au"},
-    @{Title = "Clients NZ"; Url = "$siteUrl/hs_nz"},
-    @{Title = "Health & Safety AU"; Url = "$siteUrl/healthsafety_au"},
-    @{Title = "Health & Safety NZ"; Url = "$siteUrl/healthsafety_nz"},
-    @{Title = "Employment Relations AU"; Url = "$siteUrl/ER_AU"},
-    @{Title = "Employment Relations NZ"; Url = "$siteUrl/ER_NZ"},
-    @{Title = "Client Onboarding"; Url = "https://employsure.sharepoint.com/teams/ClientOnboardingANZ"},
-    @{Title = "Law"; Url = "$siteUrl/Law-au"},
-    # @{Title = "Marketing and Events"; Url = "$siteUrl/events"},
-    # @{Title = "Finance"; Url = "$siteUrl/Finance"},
-    # @{Title = "Facilities"; Url = "$siteUrl/TalentAcquisitionANZ"},
-    @{Title = "Payroll"; Url = "$siteUrl/Payroll"},
-    # @{Title = "HR"; Url = "$siteUrl/HR"},
-    @{Title = "Sales"; Url = "$siteUrl/Sales"},
-    # @{Title = "Technology"; Url = "$siteUrl/Technology"},   
-    @{Title = "Face 2 Face"; Url = "https://employsure.sharepoint.com/teams/Face2Face"},
-    @{Title = "Client Experience"; Url = "$siteUrl/CE_AU"},
-    @{Title = "Mutual"; Url = "https://employsure.sharepoint.com/teams/mutual.team"}
-)
+    $knowledgeHubNode = Add-ParentNode -parentNodeTitle $knowledgeHubTitle -parentNodeUrl $knowledgeHubUrl
 
-# Add the child nodes under the parent node
-foreach ($childNode in $childNodes) {
-    Write-Host "Adding child node: $($childNode.Title)"
-    try {
-        $newChildNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $childNode.Title -Url $childNode.Url -Parent $InternalDepartmentsNode
-        if ($null -eq $newChildNode) {
-            Write-Host "Failed to create child node: $($childNode.Title)" -ForegroundColor Red
-        } else {
-            Write-Host "Successfully created child node: $($childNode.Title)" -ForegroundColor Green
+    $childNodes = @(
+        # @{Title = "Management"; Url = "$siteUrl/management"},
+        @{Title = "Advice"; Url = "https://employsure.sharepoint.com/sites/Advice"},
+        @{Title = "Clients AU"; Url = "https://employsure.sharepoint.com/sites/hs_au"},
+        @{Title = "Clients NZ"; Url = "https://employsure.sharepoint.com/sites/hs_nz"},
+        @{Title = "Client Onboarding"; Url = "https://employsure.sharepoint.com/teams/ClientOnboardingANZ"},
+        @{Title = "Client Experience"; Url = "https://employsure.sharepoint.com/sites/CE_AU"},
+        @{Title = "Employment Relations AU"; Url = "https://employsure.sharepoint.com/sites/ER_AU"},
+        @{Title = "Employment Relations NZ"; Url = "https://employsure.sharepoint.com/sites/ER_NZ"},
+        @{Title = "Face 2 Face"; Url = "https://employsure.sharepoint.com/teams/Face2Face"},
+        @{Title = "Health & Safety AU"; Url = "https://employsure.sharepoint.com/sites/healthsafety_au"},
+        @{Title = "Health & Safety NZ"; Url = "https://employsure.sharepoint.com/sites/healthsafety_nz"},
+        @{Title = "Mutual"; Url = "https://employsure.sharepoint.com/teams/mutual.team"}
+        @{Title = "Payroll"; Url = "https://employsure.sharepoint.com/sites/Payroll"},
+        @{Title = "Sales"; Url = "https://employsure.sharepoint.com/sites/Sales"}
+        # @{Title = "Law"; Url = "https://employsure.sharepoint.com/sites/Law-au"},
+        # @{Title = "Marketing and Events"; Url = "https://employsure.sharepoint.com/sites/events"},
+        # @{Title = "Finance"; Url = "https://employsure.sharepoint.com/sites/Finance"},
+        # @{Title = "Facilities"; Url = "https://employsure.sharepoint.com/sites/TalentAcquisitionANZ"},
+       
+        # @{Title = "HR"; Url = "https://employsure.sharepoint.com/sites/HR"},
+       
+        # @{Title = "Technology"; Url = "https://employsure.sharepoint.com/sites/Technology"},          
+    )
+
+    # Add the child nodes under the parent node
+    foreach ($childNode in $childNodes) {
+        Write-Host "Adding child node: $($childNode.Title)"
+        try {
+            $newChildNode = Add-PnPNavigationNode -Location "TopNavigationBar" -Title $childNode.Title -Url $childNode.Url -Parent $InternalDepartmentsNode
+            if ($null -eq $newChildNode) {
+                Write-Host "Failed to create child node: $($childNode.Title)" -ForegroundColor Red
+            } else {
+                Write-Host "Successfully created child node: $($childNode.Title)" -ForegroundColor Green
+            }
+        } catch {
+            Write-Host "Error creating child node: $($childNode.Title). Error: $_" -ForegroundColor Red
         }
-    } catch {
-        Write-Host "Error creating child node: $($childNode.Title). Error: $_" -ForegroundColor Red
     }
 }
 
-Write-Host "Top navigation nodes added successfully."
+
+Write-Host "Top navigation nodes added successfully to all sites."
 
 
 

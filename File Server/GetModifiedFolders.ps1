@@ -2,9 +2,9 @@
 $rootDirectory = "O:\5.Clients\1.Current clients"
 # Define the date range
 # $startDate = Get-Date "2023-11-17"   #The date that we start migration
-$startDate = Get-Date "2023-11-17"
+$startDate = Get-Date "2024-07-18"
 # $startDate = Get-Date "2024-04-02"
-$endDate = Get-Date "2024-02-14"
+$endDate = Get-Date "2024-07-22"
 # Define the output CSV file
 $outputCsv = "C:\Temp\111ModifiedFolders.csv"
 
@@ -41,6 +41,7 @@ foreach ($clientDirectory in $clientDirectories) {
         }
     }
 }
+
 $results | Format-Table -AutoSize
 # Export the results to a CSV file
 $results | Export-Csv -Path $outputCsv -NoTypeInformation

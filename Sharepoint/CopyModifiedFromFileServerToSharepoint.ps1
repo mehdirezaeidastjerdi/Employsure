@@ -1,11 +1,11 @@
 # Prerequisites
-$rootDirectory = "Z:\Modified data"
+$rootDirectory = "C:\temp\Modified data"
 $startDate = Get-Date "2024-07-18"
 # $endDate = Get-Date "2024-07-19"
 $outputCsv = "C:\Temp\ModifiedFoldersAfter-18072024.csv"
 $results = @()
 
-function Get-ModifiedItems($directory, $startDate, $endDate) {
+function Get-ModifiedItems($directory, $startDate) {
     Get-ChildItem -Path $directory -Directory | Where-Object {
         $_.LastWriteTime -ge $startDate 
     }
@@ -18,7 +18,7 @@ $clientDirectories = Get-ChildItem -Path $rootDirectory -Directory | Where-Objec
 
 foreach ($clientDirectory in $clientDirectories) {
     Write-Host "Checking folder: $($clientDirectory.FullName)"
-    $modifiedItems = Get-ModifiedItems -directory $clientDirectory.FullName -startDate $startDate -endDate $endDate
+    $modifiedItems = Get-ModifiedItems -directory $clientDirectory.FullName -startDate $startDate
     
     if ($modifiedItems.Count -gt 0) {
         foreach ($item in $modifiedItems) {
@@ -72,7 +72,7 @@ foreach ($result in $results) {
     Write-Host "Copying $sourceFolder to $destinationFolder"
 
     # Ensure the destination folder exists
-    $folderExists = Test-PnPListItem -List $destinationLibrary -ItemUrl $destinationFolder
+    $folderExists = Get-PnPFolder -Url "$destinationFolder" -ErrorAction SilentlyContinue
     if (-not $folderExists) {
         New-PnPFolder -Name $destinationFolder -Folder (Split-Path $destinationFolder -Parent)
     }
