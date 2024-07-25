@@ -91,8 +91,6 @@ foreach($hubSite in $hubSites){
         }
     }
 }
-
-
 Write-Host "Top navigation nodes added successfully to all sites."
 
 
