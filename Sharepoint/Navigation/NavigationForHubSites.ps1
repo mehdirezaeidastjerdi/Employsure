@@ -1,6 +1,6 @@
 # Install the PnP PowerShell module if not already installed
 # Install-Module -Name "PnP.PowerShell" -Force -SkipPublisherCheck
-$hubSitesPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Sharepoint\HubSites.csv"
+$hubSitesPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Sharepoint\Navigation\HubSites.csv"
 $hubSites = Import-Csv -Path $hubSitesPath
 
 function Add-ParentNode {
