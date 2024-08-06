@@ -44,6 +44,7 @@ resource "azurerm_virtual_machine" "vm" {
   resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.nic.id]
   vm_size               = "Standard_D8s_v4"
+  delete_os_disk_on_termination = true #This will ensure that the OS disk is deleted when the VM is destroyed.
 
   storage_os_disk {
     name              = "${var.vm_name}_OsDisk"
@@ -64,6 +65,7 @@ resource "azurerm_virtual_machine" "vm" {
     computer_name  = var.vm_name
     admin_username = var.admin_username
     admin_password = var.admin_password
+    custom_data    = filebase64("custom_script.ps1")
   }
 
   os_profile_windows_config {
@@ -84,21 +86,21 @@ resource "random_id" "random_id" {
   byte_length = 8
 }
 
-#resource "azurerm_managed_disk" "data_disk" {
-#  name                 = "${var.vm_name}_DataDisk1"
-#  location             = var.location
-#  resource_group_name  = var.resource_group_name
-#  storage_account_type = "Premium_LRS"
-#  create_option        = "Empty"
-#  disk_size_gb         = 100
-#}
-#
-#resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
-#  managed_disk_id    = azurerm_managed_disk.data_disk.id
-#  virtual_machine_id = azurerm_virtual_machine.vm.id
-#  lun                = 0
-#  caching            = "ReadWrite"
-#}
+resource "azurerm_managed_disk" "data_disk" {
+  name                 = "${var.vm_name}_DataDisk1"
+  location             = var.location
+  resource_group_name  = var.resource_group_name
+  storage_account_type = "Premium_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = 100
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
+  managed_disk_id    = azurerm_managed_disk.data_disk.id
+  virtual_machine_id = azurerm_virtual_machine.vm.id
+  lun                = 0
+  caching            = "ReadWrite"
+}
 
 module "domain-join" {
   source = "kumarvna/domain-join/azurerm"

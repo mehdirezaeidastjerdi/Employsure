@@ -24,7 +24,7 @@ variable "location" {
 
 variable "vm_name" {
   type        = string
-  default     = "HSVMEMPMG4"
+  default     = "DEVELOPEMG4"
   description = "Name of the virtual machine."
 }
 
@@ -36,7 +36,7 @@ variable "admin_username" {
 
 variable "admin_password" {
   type        = string
-  default      = "Employ@@111"
+  default      = ""
   description = "Admin password for the virtual machine."
 }
 
@@ -52,7 +52,7 @@ variable "domain_user" {
 
 variable "domain_password" {
   type = string
-  default = "1Employ@131@#"
+  default = ""
 }
 
 variable "ou_path" {
