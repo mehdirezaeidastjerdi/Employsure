@@ -1,3 +1,4 @@
+#Read the variables from C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Terraform
 variable "resource_group_name" {
   type        = string
    default     = "AZ-SYD-PROD-01"
@@ -24,7 +25,7 @@ variable "location" {
 
 variable "vm_name" {
   type        = string
-  default     = "DEVELOPEMG4"
+  default     = "HSVMEMPMG4"
   description = "Name of the virtual machine."
 }
 

@@ -41,7 +41,6 @@ foreach ($clientDirectory in $clientDirectories) {
         }
     }
 }
-
 $results | Format-Table -AutoSize
 # Export the results to a CSV file
 $results | Export-Csv -Path $outputCsv -NoTypeInformation

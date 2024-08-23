@@ -40,7 +40,7 @@ foreach ($Row in $Matched[9000..12000]) {
             $CopiedItems += New-Object PSObject -Property $details
             
             # Delete the file from the source
-            Remove-PnPFile -ServerRelativeUrl "/sites/$SourceSite/$SourceLib/$SourceFolder/$fileLeafRef" -Force
+            Remove-PnPFile -ServerRelativeUrl "/sites/$SourceSite/$SourceLib/$SourceFolder/$fileLeafRef" -Force 
             Write-Host "'$fileLeafRef' deleted from source!" -ForegroundColor Green
         } catch {
             $errorMessage = $_.Exception.Message
@@ -64,7 +64,5 @@ $NotExistInSourceItems | Format-Table
 # Export copied, non-existent, and conflict items to CSV
 $CopiedItems | Export-Csv -Path $CopiedItemsPath -NoTypeInformation
 $NotExistInSourceItems | Export-Csv -Path $NotExistInSourceItemsPath -NoTypeInformation
-
-
 # Disconnect from SharePoint Online
 # Disconnect-PnPOnline
