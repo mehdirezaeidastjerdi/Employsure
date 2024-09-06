@@ -65,7 +65,8 @@ foreach($hubSite in $hubSites){
         @{Title = "Health & Safety NZ"; Url = "https://employsure.sharepoint.com/sites/healthsafety_nz"},
         @{Title = "Mutual"; Url = "https://employsure.sharepoint.com/teams/mutual.team"}
         @{Title = "Payroll"; Url = "https://employsure.sharepoint.com/sites/Payroll"},
-        @{Title = "Sales"; Url = "https://employsure.sharepoint.com/sites/Sales"}
+        @{Title = "Sales"; Url = "https://employsure.sharepoint.com/sites/Sales"},
+        @{Title = "Wpex"; Url = "https://employsure.sharepoint.com/sites/Wpex"}
         # @{Title = "Law"; Url = "https://employsure.sharepoint.com/sites/Law-au"},
         # @{Title = "Marketing and Events"; Url = "https://employsure.sharepoint.com/sites/events"},
         # @{Title = "Finance"; Url = "https://employsure.sharepoint.com/sites/Finance"},

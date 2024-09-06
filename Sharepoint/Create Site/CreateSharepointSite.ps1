@@ -12,13 +12,12 @@ $AdminUserName = "mehdi.rezaei.adm@employsure.com.au"
 #Set Config Parameters
 $TenantUrl = "https://$($TenantName)-admin.sharepoint.com"
 #$CSVPath = "C:\Data\Powershell\sites.csv"
-$CSVPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Sharepoint\sites.csv"
+$CSVPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Sharepoint\Create Site\sites.csv"
 
 $AccessRequestEmail = [string]::Empty
 $Template = "STS#3" # Modern Team Site
 $Timezone = 76 # GMT+10 Canberra, Melbourne, Sydney
 $LCID = 3081 #English - Australia | en-au  | 3081
-
 # Connect to Tenant
 Connect-PnPOnline -url $TenantUrl -Interactive
 

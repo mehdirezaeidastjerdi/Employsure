@@ -2,14 +2,14 @@
 # Install-Module -Name "SharePointPnPPowerShellOnline"
 
 # Define variables for site name, source and target URLs, and document library
-$SiteName = "hs_au"
-$DocumentLibrary = "Obsolete2024-DL"
+$SiteName = "Technology"
+$DocumentLibrary = "Clients_EMP_OLD"
 
 # Connect to the specified SharePoint Online Teams site using web login
 Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/$SiteName" -Interactive
 
 # Define file paths for various CSV files
-$AllSharepointItemsPath = "C:\temp\AllSharepointItems_Obsolete2024-DL.csv"
+$AllSharepointItemsPath = "C:\temp\AllSharepointItems_Technology_Clients_EMP_OLD.csv"
 $PageSize = 2000 # Set the number of items to retrieve
 
 # Try block to handle potential errors
