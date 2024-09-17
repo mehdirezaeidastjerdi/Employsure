@@ -32,7 +32,7 @@ foreach($hubSite in $hubSites){
 
     $siteUrl = $hubSite.siteUrl
     # Connect-PnPOnline -Url "$siteUrl/$siteName" -Interactive
-    Connect-PnPOnline -Url $siteUrl -Interactive
+    Connect-PnPOnline -Url $siteUrl -UseWebLogin
     Write-Host "Connected and adding Navigation to $siteUrl" -f Cyan
     # Define parent nodes with their respective URLs
     $intranetNodeTitle = "Intranet"
@@ -66,7 +66,7 @@ foreach($hubSite in $hubSites){
         @{Title = "Mutual"; Url = "https://employsure.sharepoint.com/teams/mutual.team"}
         @{Title = "Payroll"; Url = "https://employsure.sharepoint.com/sites/Payroll"},
         @{Title = "Sales"; Url = "https://employsure.sharepoint.com/sites/Sales"},
-        @{Title = "Wpex"; Url = "https://employsure.sharepoint.com/sites/Wpex"}
+        @{Title = "BDS"; Url = "https://employsure.sharepoint.com/sites/business_development_support"}
         # @{Title = "Law"; Url = "https://employsure.sharepoint.com/sites/Law-au"},
         # @{Title = "Marketing and Events"; Url = "https://employsure.sharepoint.com/sites/events"},
         # @{Title = "Finance"; Url = "https://employsure.sharepoint.com/sites/Finance"},
