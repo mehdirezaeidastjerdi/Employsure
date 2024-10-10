@@ -6,7 +6,7 @@ $SiteName = "Technology"
 $DocumentLibrary = "Clients_EMP_OLD"
 
 # Connect to the specified SharePoint Online Teams site using web login
-Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/$SiteName" -Interactive
+Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/$SiteName" -UseWebLogin
 
 # Define file paths for various CSV files
 $AllSharepointItemsPath = "C:\temp\AllSharepointItems_Technology_Clients_EMP_OLD.csv"

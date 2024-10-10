@@ -55,6 +55,7 @@ foreach($hubSite in $hubSites){
         # @{Title = "Management"; Url = "$siteUrl/management"},
         @{Title = "Advice"; Url = "https://employsure.sharepoint.com/sites/Advice"},
         @{Title = "Clients AU"; Url = "https://employsure.sharepoint.com/sites/hs_au"},
+        @{Title = "BDS"; Url = "https://employsure.sharepoint.com/sites/business_development_support"},
         @{Title = "Clients NZ"; Url = "https://employsure.sharepoint.com/sites/hs_nz"},
         @{Title = "Client Onboarding"; Url = "https://employsure.sharepoint.com/teams/ClientOnboardingANZ"},
         @{Title = "Client Experience"; Url = "https://employsure.sharepoint.com/sites/CE_AU"},
@@ -66,7 +67,7 @@ foreach($hubSite in $hubSites){
         @{Title = "Mutual"; Url = "https://employsure.sharepoint.com/teams/mutual.team"}
         @{Title = "Payroll"; Url = "https://employsure.sharepoint.com/sites/Payroll"},
         @{Title = "Sales"; Url = "https://employsure.sharepoint.com/sites/Sales"},
-        @{Title = "BDS"; Url = "https://employsure.sharepoint.com/sites/business_development_support"}
+        @{Title = "Technology"; Url = "https://employsure.sharepoint.com/sites/Technology"}
         # @{Title = "Law"; Url = "https://employsure.sharepoint.com/sites/Law-au"},
         # @{Title = "Marketing and Events"; Url = "https://employsure.sharepoint.com/sites/events"},
         # @{Title = "Finance"; Url = "https://employsure.sharepoint.com/sites/Finance"},
