@@ -5,6 +5,7 @@ Install-Module PnP.PowerShell -RequiredVersion 1.12.0 -Force -AllowClobber
 Get-InstalledModule -Name PnP.PowerShell -AllVersions
 #>
 #
+Install-Module PnP.PowerShell -Force -AllowClobber
 CLS
 # Connection parameters
 $TenantName = "employsure"
@@ -44,9 +45,7 @@ Try {
             # Create site collection
             Write-host "Creating Site Collection: $SiteURL" -f Cyan
             New-PnPTenantSite -Url $SiteURL -Title $Title -Owner $Owner -Template $Template -TimeZone $TimeZone -RemoveDeletedSite -ErrorAction Continue
-            Write-host "`t Done!" -f Green
-
-            
+            Write-host "`t Done!" -f Green           
             # Associate the new site with a hub site
             If ($HubSiteURL -ne $null -and $HubSiteURL -ne "") {
                 # Connect to the new site

@@ -1,6 +1,6 @@
 # Install the PnP PowerShell module if not already installed
 # Install-Module -Name "PnP.PowerShell" -Force -SkipPublisherCheck
-$hubSitesPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Sharepoint\Navigation\HubSites.csv"
+$hubSitesPath = "C:\temp\HubSites.csv"
 $hubSites = Import-Csv -Path $hubSitesPath
 
 function Add-ParentNode {
@@ -59,6 +59,7 @@ foreach($hubSite in $hubSites){
         @{Title = "Clients NZ"; Url = "https://employsure.sharepoint.com/sites/hs_nz"},
         @{Title = "Client Onboarding"; Url = "https://employsure.sharepoint.com/teams/ClientOnboardingANZ"},
         @{Title = "Client Experience"; Url = "https://employsure.sharepoint.com/sites/CE_AU"},
+        @{Title = "CX & Retention"; Url = "https://employsure.sharepoint.com/sites/CX-Retention-Shared"},
         @{Title = "Employment Relations AU"; Url = "https://employsure.sharepoint.com/sites/ER_AU"},
         @{Title = "Employment Relations NZ"; Url = "https://employsure.sharepoint.com/sites/ER_NZ"},
         @{Title = "Face 2 Face"; Url = "https://employsure.sharepoint.com/teams/Face2Face"},
@@ -94,7 +95,3 @@ foreach($hubSite in $hubSites){
     }
 }
 Write-Host "Top navigation nodes added successfully to all sites."
-
-
-
-
