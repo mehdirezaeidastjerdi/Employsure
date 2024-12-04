@@ -5,7 +5,7 @@ Install-Module PnP.PowerShell -RequiredVersion 1.12.0 -Force -AllowClobber
 Get-InstalledModule -Name PnP.PowerShell -AllVersions
 #>
 #
-Install-Module PnP.PowerShell -Force -AllowClobber
+# Install-Module PnP.PowerShell -Force -AllowClobber
 CLS
 # Connection parameters
 $TenantName = "employsure"
@@ -15,13 +15,12 @@ $AdminUserName = "mehdi.rezaei.adm@employsure.com.au"
 $TenantUrl = "https://$($TenantName)-admin.sharepoint.com"
 #$CSVPath = "C:\Data\Powershell\sites.csv"
 $CSVPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Sharepoint\Create Site\sites.csv"
-
 $AccessRequestEmail = [string]::Empty
 $Template = "STS#3" # Modern Team Site
 $Timezone = 76 # GMT+10 Canberra, Melbourne, Sydney
 $LCID = 3081 #English - Australia | en-au  | 3081
 # Connect to Tenant
-Connect-PnPOnline -Url $TenantUrl -UseWebLogin #-ClientId $clientId -ClientSecret $clientSecret
+Connect-PnPOnline -Url $TenantUrl -UseWebLogin 
 
 Try {
     # Get Site Collections to create from a CSV file
@@ -49,7 +48,7 @@ Try {
             # Associate the new site with a hub site
             If ($HubSiteURL -ne $null -and $HubSiteURL -ne "") {
                 # Connect to the new site
-                Connect-PnPOnline -Url $TenantUrl -ClientId $clientId -ClientSecret $clientSecret
+                Connect-PnPOnline -Url $TenantUrl -UseWebLogin
                 Write-Host "Wait for $WaitTime seconds before associating the hub site..."
                 Start-Sleep $WaitTime
                 Write-Host "Associating $SiteURL with hub site $HubSiteURL" -f Cyan
