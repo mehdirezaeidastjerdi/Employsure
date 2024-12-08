@@ -21,11 +21,13 @@ Get-DistributionGroupMember -Identity "AllMeetingRooms" | Select Name, PrimarySm
 # Give Wpex users permissions to the meeting room
 # Jade.Yee@employsure.com.au
 # Nathan.Coakley@employsure.com.au
-# Caitlyn.Fehily@employsure.com.au
+# alyssa.mayo@employsure.com.au
+
 
 Add-MailboxFolderPermission SYD6.2MeetingRoom@peninsula-au.com:\calendar -user Jade.Yee@employsure.com.au -accessright Owner
 Add-MailboxFolderPermission SYD6.2MeetingRoom@peninsula-au.com:\calendar -user Nathan.Coakley@employsure.com.au -accessright Owner
+Add-MailboxFolderPermission SYD6.2MeetingRoom@peninsula-au.com:\calendar -user alyssa.mayo@employsure.com.au -accessright Owner
 # Add-MailboxFolderPermission SYD6.8MeetingRoom@peninsula-au.com:\calendar -user Caitlyn.Fehily@employsure.com.au -accessright Owner
 
 
-Get-DistributionGroup | Select Name, PrimarySmtpAddress
+#Get-DistributionGroup | Select Name, PrimarySmtpAddress
