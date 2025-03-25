@@ -1,4 +1,4 @@
-# Install the SharePoint PnP PowerShell module if not already installed
+# Install-Module -Name "PnP.PowerShell"
 #Install-Module -Name "SharePointPnPPowerShellOnline"
 # Define variables for site name, source and target URLs, and document library
 $SiteName = "hs_au"

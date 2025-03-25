@@ -1,15 +1,15 @@
 # Install the SharePoint PnP PowerShell module if not already installed
 #Install-Module -Name "PnP.PowerShell"
 # Define variables for site name, source and target URLs, and document library
-$SiteName = "Technology"
-$DocumentLibrary = "Clients_EMP_OLD"
+$SiteName = "hs_au"
+$DocumentLibrary = "Clients_DocLibrary"
 
 # Connect to the specified SharePoint Online site using web login
 Connect-PnPOnline -Url "https://employsure.sharepoint.com/sites/$SiteName" -UseWebLogin
 
 # Define file paths for various CSV files
 
-$AllItemsPath = "C:\temp\Technology_Clients_EMP_Old_Complete.csv"
+$AllMigrationDataItemsPath = "C:\temp\AllClients-Clients_DocLibrary.csv"
 $BatchSize = 2000
 # Try block to handle potential errors
 try {
@@ -18,9 +18,7 @@ try {
         Write-Host "Retrieve all files from the document library"
         
         # Retrieve list items from the specified document library, filtered by folder paths
-        # $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary" 
-        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary/Complete"            
-        }
+        $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize | Where-Object { $_["FileDirRef"] -eq "/sites/$SiteName/$DocumentLibrary"}
         Write-Host "Batch selected..."
 
         # Initialize an array to store SharePoint items
@@ -36,8 +34,8 @@ try {
      # Export the array of SharePoint items to a CSV file
      Write-host "Elabsed time: $timer"
      Write-Host "All sharepoint Items exported to $AllSarepointItemsPath"
-     $AllSharepointItems | Export-Csv -Path $AllItemsPath -NoTypeInformation -Append
-     $AllSharepointItems | Format-Table        
+     $AllSharepointItems | Export-Csv -Path $AllMigrationDataItemsPath -NoTypeInformation -Append
+    #  $AllSharepointItems | Format-Table        
 }
 catch {
     # Catch block to handle and display errors
