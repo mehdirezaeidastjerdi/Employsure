@@ -29,9 +29,7 @@ foreach ($Row in $Matched[0..2]) {
         "ClientTradingName" = $fileLeafRef
     }
     # Check if the item exists in the source library
-    if ($fileExists -or $FolderExists) {
-        
-           
+    if ($fileExists -or $FolderExists) {          
             try {
                 Write-Host "Copying $fileLeafRef to destination."
                 # Try to copy the file to the destination
