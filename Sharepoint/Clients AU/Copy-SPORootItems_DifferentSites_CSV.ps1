@@ -16,6 +16,7 @@ function Connect-WithCertificate {
 
 function Copy-SPORootItems {
     param (
+        [string]$CsvPath,
         [string]$SourceSite,
         [string]$SourceLib,
         [string]$DestSite,
@@ -37,21 +38,18 @@ function Copy-SPORootItems {
 
     $RootPath = "/sites/$SourceSite/$SourceLib"
 
-    Write-Host "Retrieving root-level items from '$SourceLib'..."
+    Write-Host "Retrieving items from csv file..."
 
-    $AllItems = Get-PnPListItem -List $SourceLib -PageSize $PageSize -Fields "FileLeafRef", "FileRef", "FileDirRef", "FSObjType" | Where-Object {
-        $_["FileDirRef"] -eq $RootPath
-    }
-
-    Write-Host "Found $($AllItems.Count) root items."
-
+    $AllItems = Import-Csv $CsvPath
+    
+    
     foreach ($item in $AllItems) {
-        $name = $item["FileLeafRef"]
+        $name = $item.name
         $sourceRelativeUrl = "$SourceLib/$name"
         $fullSourceUrl = "/sites/$SourceSite/$sourceRelativeUrl"
         $targetRelativeUrl = "/sites/$DestSite/$DestLib"
-        $type = $item["FSObjType"]
-        $ref = $item["FileRef"]
+        $type = [bool]::Parse($item.Folder)
+        $ref = $item.path
         Write-Host "Copying item '$name' from '$fullSourceUrl' to '$targetRelativeUrl'..."
 
         try {
@@ -66,10 +64,10 @@ function Copy-SPORootItems {
             $FailedCopyItems += [PSCustomObject]@{ Name = $name; Error = $_.Exception.Message }
         }
         try {
-                if ($type -eq 0) {
+                if (-not $type) { # if it's a file
                     Remove-PnPFile -Url $ref -Force
                 }
-                elseif ($type -eq 1) {
+                else {
                     # Extract parent folder path
                     $parentPath = ($ref -replace "/$name$", "")  # removes folder name from path
                     Remove-PnPFolder -Name $name -Folder $parentPath -Force
@@ -95,8 +93,9 @@ function Copy-SPORootItems {
 
 # Run the copy and remove process
 Copy-SPORootItems `
-    -SourceSite "Technology" `
-    -SourceLib "Clients_EMP_Modified_Test" `
+    -CsvPath "C:\temp\Technology_Clients_EMP_Modified.csv" `
+    -SourceSite "hs_au" `
+    -SourceLib "Clients_EMP_Modified" `
     -DestSite "hs_au_arch" `
-    -DestLib "Clients_EMP_Test" `
+    -DestLib "Clients_EMP_Modified" `
     -PageSize 2000

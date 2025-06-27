@@ -2,7 +2,8 @@
 $ClientId = "e533e644-7841-414c-b988-3f5f668d388f"
 $TenantId = "ef7f5213-d6d1-4d58-920b-f442749ee37d"
 $CertificatePath = "C:\Certs\PnPCertificate.pfx"
-$CertificatePassword = ConvertTo-SecureString "****" -AsPlainText -Force
+# Get certifacate password from env variables
+$CertificatePassword = ConvertTo-SecureString $env:PNP_CERT_PASSWORD -AsPlainText -Force
 
 function Connect-WithCertificate {
     param (
@@ -71,4 +72,4 @@ function Export-SPOLibraryItems {
     }
 }
 
-Export-SPOLibraryItems -SiteName "Technology" -DocumentLibrary "Clients_EMP_Test" -ExportCsvPath "C:\temp\Technology_Clients_EMP_Test.csv" 
+Export-SPOLibraryItems -SiteName "hs_au_arch" -DocumentLibrary "Clients_EMP_Test" -ExportCsvPath "C:\temp\hs_au_arch_Clients_EMP_Test.csv" 
