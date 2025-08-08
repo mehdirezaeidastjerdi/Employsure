@@ -13,7 +13,7 @@ function Export-RootFoldersForTop10 {
         $fieldsToLoad = @("ID", "FileLeafRef", "FileDirRef", "FSObjType")
 
         $timer = Measure-Command {
-            $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize -Fields $fieldsToLoad | Select-Object -First 100
+            $ListItems = Get-PnPListItem -List $DocumentLibrary -PageSize $BatchSize -Fields $fieldsToLoad | Select-Object -First 10000
         }
 
         Write-Host "Elapsed time: $timer"
