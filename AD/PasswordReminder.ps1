@@ -1,3 +1,26 @@
+<#
+1. Purpose
+   This script checks all enabled Active Directory user accounts where passwords:
+   - Expire (i.e., passwords are NOT set to never expire)
+   - Are NOT already expired
+
+   It calculates how many days remain before each user’s password expires.
+   If the expiry date is within the next 14 days, the script sends an email reminder
+   (including a Microsoft password change link) and logs this action.
+
+2. Main Functions
+
+   Configuration & Logging Setup:
+   - Defines SMTP server, sender address, logging options, test mode, and log file path.
+   - Creates a CSV log file with headers if it does not already exist.
+
+   Get Active Directory Users:
+   - Uses Get-ADUser to retrieve all users with the following conditions:
+     - Enabled = True
+     - PasswordNeverExpires = False
+     - PasswordExpired = False
+#>
+
 #Created by Richard dib
 <#
 Microsoft Link to change the password changed 
