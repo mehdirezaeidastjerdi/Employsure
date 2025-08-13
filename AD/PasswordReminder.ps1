@@ -1,16 +1,17 @@
 #Created by Richard dib
-
+<#
+Microsoft Link to change the password changed 
+Last Modified : 23/05/2024
+Modified by: Mehdi Rezaei
+#>
 $smtpServer="employsure-com-au.mail.protection.outlook.com"
 $expireindays = 14
 $from = "Employsure Service Desk <servicedesk@employsure.com.au>"
 
 $logging = "Enabled" # Set to Disabled to Disable Logging
 $logFile = "\\hsvmempmg1\c$\Scripts\Password Rem\mylog.csv"
-# $testing = "disabled" # Set to Disabled to Email Users
-# $testRecipient = "richard.dib@employsure.com.au","servicedesk@employsure.com.au"
-$testing = "enabled" # Set to Disabled to Email Users
-$testRecipient = "mehdi.rezaei@employsure.com.au"
-
+$testing = "disabled" # Set to Disabled to Email Users
+$testRecipient = "richard.dib@employsure.com.au","servicedesk@employsure.com.au"
 #
 ###################################################################################################################
 
@@ -125,8 +126,8 @@ foreach ($user in $users)
             Add-Content $logfile "$date,$Name,$emailaddress,$daystoExpire,$expireson,$sent"
         }
         # Send Email Message
-		# Send-Mailmessage -smtpServer $smtpServer -from $from -to $emailaddress -subject $subject -body $body -bodyasHTML -priority High -Encoding $textEncoding
-        Send-Mailmessage -smtpServer $smtpServer -from $from -to $emailaddress -subject $subject -body $body -bodyasHTML -priority High -Encoding $textEncoding
+		Send-Mailmessage -smtpServer $smtpServer -from $from -to $emailaddress -subject $subject -body $body -bodyasHTML -priority High -Encoding $textEncoding
+
     } # End Send Message
     else # Log Non Expiring Password
     {
