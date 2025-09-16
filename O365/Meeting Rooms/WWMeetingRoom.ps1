@@ -95,3 +95,9 @@ foreach ($Room in $Rooms) {
         }
     }
 }
+
+
+
+
+
+Get-CalendarProcessing "WW13.1InterviewRoom@wisdomwellbeing.au" | fl AutomateProcessing,BookingDelegate,AllRequestOutOfPolicy

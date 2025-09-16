@@ -1,7 +1,7 @@
 $ClientId = "e533e644-7841-414c-b988-3f5f668d388f"
 $TenantId = "ef7f5213-d6d1-4d58-920b-f442749ee37d"
 $CertificatePath = "C:\Certs\PnPCertificate.pfx"
-$CertificatePassword = ConvertTo-SecureString "****" -AsPlainText -Force
+$CertificatePassword = ConvertTo-SecureString $env:PNP_CERT_PASSWORD -AsPlainText -Force
 
 Import-Module PnP.PowerShell
 
@@ -43,7 +43,6 @@ function Remove-SPORootItems {
         }
         $DeletedItems = @()
         $FailedItems = @()
-
         foreach ($item in $AllItems) {
 
             $name = $item["FileLeafRef"]
