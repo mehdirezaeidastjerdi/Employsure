@@ -96,7 +96,7 @@ function Copy-SPORootItems {
 # Run the copy and remove process
 Copy-SPORootItems `
     -SourceSite "Technology" `
-    -SourceLib "Clients_EMP_Modified_Test" `
-    -DestSite "hs_au_arch" `
-    -DestLib "Clients_EMP_Test" `
+    -SourceLib "Obsolete Clients" `
+    -DestSite "technology_arch" `
+    -DestLib "Obsolete Clients" `
     -PageSize 2000
