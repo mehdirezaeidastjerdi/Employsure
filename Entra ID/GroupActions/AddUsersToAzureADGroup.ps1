@@ -1,4 +1,4 @@
-# This script imports a list of users from a CSV file and adds them to a specified Azure AD group.
+# This script imports a list of users(userPrincipalName) from a CSV file and adds them to a specified Azure AD group.
 # The CSV file should contain columns 'userPrincipalName' and 'group'.
 # Ensure that the AzureAD module is installed and that you have the necessary permissions to manage group memberships.
 # Import the AzureAD
@@ -10,7 +10,7 @@ Connect-AzureAD
 
 # Path to the CSV file
 # the csv file must contain these columns :userPrincipalName and group
-$csvPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Azure AD\Users.csv"
+$csvPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Entra ID\Users.csv"
 
 # Group ID of the Azure AD group
 $groupId = "83958f71-d617-4b10-87ed-b3fe80509454"
