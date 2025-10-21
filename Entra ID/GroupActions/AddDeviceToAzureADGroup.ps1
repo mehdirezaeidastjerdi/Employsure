@@ -1,10 +1,10 @@
 Connect-AzureAD
 # Retrieve the group information
-$group = Get-AzureADGroup -Filter "DisplayName eq 'TST-Netskope-V120-Device-Group'"
+$group = Get-AzureADGroup -Filter "DisplayName eq 'TST-UninstallNetskope-DeviceGroup'"
 $groupId = $group.ObjectId
 
 # Import the list of device names
-$devices = Import-Csv -Path "C:\Users\Mehdi.Rezaei\Downloads\GroupImportMembersTemplate.csv"
+$devices = Import-Csv -Path "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Entra ID\GroupActions\GroupImportMembersTemplate.csv"
 $devices
 # Loop through each device from the CSV
 foreach ($device in $devices) {

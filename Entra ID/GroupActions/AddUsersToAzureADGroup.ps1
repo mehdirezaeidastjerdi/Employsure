@@ -10,10 +10,10 @@ Connect-AzureAD
 
 # Path to the CSV file
 # the csv file must contain these columns :userPrincipalName and group
-$csvPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Entra ID\Users.csv"
+$csvPath = "C:\Users\Mehdi.Rezaei\OneDrive - Employsure\Usefull Scripts\Employsure\Entra ID\FinancialGroup.csv"
 
 # Group ID of the Azure AD group
-$groupId = "83958f71-d617-4b10-87ed-b3fe80509454"
+$groupId = "160df98c-3614-4ded-91c8-71f83ae77839"
 
 # Import CSV
 $users = Import-Csv -Path $csvPath
