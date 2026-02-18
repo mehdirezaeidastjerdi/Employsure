@@ -1,4 +1,5 @@
 {
     "azureAutomation.directory.folderStructure": "subscription/resourceGroup/automationAccount",
-    "azureAutomation.directory.basePath": "c:\\Users\\Mehdi.Rezaei"
+    "azureAutomation.directory.basePath": "c:\\Users\\Mehdi.Rezaei",
+    "CodeGPT.apiKey": "OpenAI"
 }
