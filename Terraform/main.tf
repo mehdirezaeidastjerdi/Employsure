@@ -43,21 +43,21 @@ resource "azurerm_virtual_machine" "vm" {
   location              = var.location
   resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.nic.id]
-  vm_size               = "Standard_D8s_v4"
+  vm_size               = "Standard_d2ds_v5"
   delete_os_disk_on_termination = true #This will ensure that the OS disk is deleted when the VM is destroyed.
 
   storage_os_disk {
     name              = "${var.vm_name}_OsDisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
-    disk_size_gb      = 127
+    managed_disk_type = "StandardSSD_LRS"
+    disk_size_gb      = 256
   }
 
   storage_image_reference {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
-    sku       = "2022-datacenter-azure-edition"
+    sku       = "2025-datacenter-azure-edition"
     version   = "latest"
   }
 
@@ -90,7 +90,7 @@ resource "azurerm_managed_disk" "data_disk" {
   name                 = "${var.vm_name}_DataDisk1"
   location             = var.location
   resource_group_name  = var.resource_group_name
-  storage_account_type = "Premium_LRS"
+  storage_account_type = "StandardSSD_LRS"
   create_option        = "Empty"
   disk_size_gb         = 100
 }
@@ -112,10 +112,12 @@ module "domain-join" {
   active_directory_password = var.domain_password
   ou_path                  = var.ou_path
   tags = {
-    ProjectName = "migration-project"
-    Env         = "dev"
-    Owner       = "user@example.com"
-    BusinessUnit = "CORP"
-    ServiceClass = "Gold"
+    ProjectName = "connect-sync"
+    Environment = "production"
+    Department = "IT"
+    Team = "infrastructure"
+    # Owner       = "user@example.com"
+    # BusinessUnit = "CORP"
+    # ServiceClass = "Gold"
   }
 }

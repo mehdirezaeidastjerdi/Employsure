@@ -25,19 +25,20 @@ variable "location" {
 
 variable "vm_name" {
   type        = string
-  default     = "HSVMEMPMG4"
+  default     = "HSVMEMPCONSYNC"
   description = "Name of the virtual machine."
 }
 
 variable "admin_username" {
   type        = string
-  default     = "employsureit"
+  default     = "admt"
   description = "Admin username for the virtual machine."
 }
 
 variable "admin_password" {
   type        = string
   default      = ""
+  sensitive = true
   description = "Admin password for the virtual machine."
 }
 
@@ -54,6 +55,8 @@ variable "domain_user" {
 variable "domain_password" {
   type = string
   default = ""
+  description = "domain admin password"
+  sensitive = true
 }
 
 variable "ou_path" {
@@ -61,4 +64,3 @@ variable "ou_path" {
   type        = string
   default     = "OU=Servers,DC=employsure,DC=local"
 }
-
