@@ -11,3 +11,6 @@ Terraform/terraform.tfstate
 crash.log
 override.tf
 override.tf.json
+
+# Ignore Clude and Meraki API keys
+Python/.gitignore
