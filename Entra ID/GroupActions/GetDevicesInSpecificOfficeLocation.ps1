@@ -9,11 +9,13 @@ $result = foreach ($device in $devices) {
 
     # Skip devices without users
     if (-not $device.UserPrincipalName) { continue }
+    # Only Windows devices
+    if ($device.OperatingSystem -ne "Windows") { continue }
 
     try {
         $user = Get-MgUser -UserId $device.UserPrincipalName -Property OfficeLocation
 
-        if ($user.OfficeLocation -like "*Perth*") {
+        if ($user.OfficeLocation -like "*Ultimo*") {
 
             [PSCustomObject]@{
                 DeviceName       = $device.DeviceName
@@ -31,4 +33,4 @@ $result = foreach ($device in $devices) {
     }
 }
 
-$result | Export-Csv "C:\temp\Perth-Devices.csv" -NoTypeInformation
+$result | Export-Csv "C:\temp\devices\Ultimo-Devices.csv" -NoTypeInformation
