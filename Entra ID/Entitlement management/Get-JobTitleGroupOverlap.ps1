@@ -1,11 +1,20 @@
+
+# Install the required modules if they aren't already present
+# Install-Module Microsoft.Graph.Users -Scope CurrentUser -Force
+# Install-Module Microsoft.Graph.Groups -Scope CurrentUser -Force
+# Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -Force
+
+# Import them explicitly
+Import-Module Microsoft.Graph.Authentication
+Import-Module Microsoft.Graph.Users
+Import-Module Microsoft.Graph.Groups
+
 Connect-MgGraph -Scopes "User.Read.All","Group.Read.All"
 
-# $JobTitle = "Business Sales Consultant"
-
-$JobTitle = "Business Development Manager"
+$JobTitle = "Business Sales Consultant"
 
 # Ensure output folder exists
-$OutputPath = "C:\temp\users"
+$OutputPath = "C:\temp\users\Entitlement management\"
 if (!(Test-Path $OutputPath)) {
     New-Item -ItemType Directory -Path $OutputPath | Out-Null
 }
@@ -30,8 +39,8 @@ foreach ($user in $users) {
 
     foreach ($group in $groups) {
 
-        # Get full group details
-        $g = Get-MgGroup -GroupId $group.Id -Property DisplayName,SecurityEnabled,MailEnabled,GroupTypes
+        # Get full group details including OnPremisesSyncEnabled
+        $g = Get-MgGroup -GroupId $group.Id -Property DisplayName,SecurityEnabled,MailEnabled,GroupTypes,OnPremisesSyncEnabled
 
         # Determine group type
         $groupType =
@@ -41,12 +50,16 @@ foreach ($user in $users) {
             elseif ($g.MailEnabled) { "Microsoft 365 Group" }
             else { "Unknown" }
 
+        # Determine group source (Cloud vs Windows Server AD)
+        $groupSource = if ($g.OnPremisesSyncEnabled -eq $true) { "Windows Server AD" } else { "Cloud" }
+
         # Add to dataset
         $dataset += [PSCustomObject]@{
-            User      = $user.DisplayName
-            UPN       = $user.UserPrincipalName
-            GroupName = $g.DisplayName
-            GroupType = $groupType
+            User        = $user.DisplayName
+            UPN         = $user.UserPrincipalName
+            GroupName   = $g.DisplayName
+            GroupType   = $groupType
+            GroupSource = $groupSource
         }
     }
 }
@@ -59,15 +72,18 @@ $totalUsers = ($dataset | Select-Object User -Unique).Count
 # 🔥 Only analyze Security Groups (role-relevant)
 $analysis = $dataset |
     Where-Object { $_.GroupType -eq "Security Group" } |
-    Group-Object GroupName |
+    Group-Object GroupName, GroupSource |
     ForEach-Object {
 
+        $groupName = $_.Group[0].GroupName
+        $groupSource = $_.Group[0].GroupSource
         $userCount = ($_.Group | Select-Object User -Unique).Count
 
         [PSCustomObject]@{
-            GroupName  = $_.Name
-            UserCount  = $userCount
-            Percentage = [math]::Round(($userCount / $totalUsers) * 100, 2)
+            GroupName   = $groupName
+            GroupSource = $groupSource
+            UserCount   = $userCount
+            Percentage  = [math]::Round(($userCount / $totalUsers) * 100, 2)
         }
     } |
     Sort-Object Percentage -Descending
