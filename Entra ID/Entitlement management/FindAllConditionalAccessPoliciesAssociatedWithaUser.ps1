@@ -24,7 +24,8 @@ Connect-MgGraph -Scopes `
 # Target user
 # ------------------------------------------------------------
 
-$UserPrincipalName = "Alexander.Odonnell@employsure.com.au"   # Change this
+# $UserPrincipalName = "Alexander.Odonnell@employsure.com.au"
+$UserPrincipalName = "adrian.obrien@employsure.com.au"   # Change this
 
 Write-Host "`nSearching for user: $UserPrincipalName..." -ForegroundColor Cyan
 
